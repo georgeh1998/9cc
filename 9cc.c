@@ -7,21 +7,10 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-
-  printf("	.arch armv8-a\n");
-  printf("	.text\n");
-  printf("	.align	2\n");
-  printf("	.global	main\n");
-  printf("  .type	main, %%function\n");
+  printf(".intel_syntax noprefix\n");
+  printf(".globl main\n");
   printf("main:\n");
-  printf(".LFB0:\n");
-  printf("	.cfi_startproc\n");
-  printf("	mov	w0, %d\n", atoi(argv[1]));
-  printf("	ret\n");
-  printf("	.cfi_endproc\n");
-  printf(".LFE0:\n");
-  printf("	.size	main, .-main\n");
-  printf("	.ident	\"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\"\n");
-  printf("  .section	.note.GNU-stack,\"\",@progbits\n");
+  printf("  mov rax, %d\n", atoi(argv[1]));
+  printf("  ret\n");
   return 0;
 }
