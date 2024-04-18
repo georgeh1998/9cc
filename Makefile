@@ -13,7 +13,7 @@ test: 9cc
 
 # make check ARG="12+2;"
 check: 9cc
-	./test2.sh ${ARG}
+	bash -x ./test2.sh ${ARG}
 
 clean:
 	rm -f 9cc *.o *~ tmp*

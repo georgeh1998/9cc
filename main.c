@@ -15,6 +15,9 @@ char *user_input;
 // 複数行分のNode
 Node *code[100];
 
+// ローカル変数
+LVar *locals;
+
 int main(int argc, char **argv) {
   if (argc != 2) {
     fprintf(stderr, "引数の個数が正しくありません\n");
@@ -26,7 +29,7 @@ int main(int argc, char **argv) {
   token = tokenize();
 
   // 正しくトークナイズできているかどうかデバッグ用
-  printTokens(*token);
+  // printTokens(*token);
 
   program();
 
@@ -39,7 +42,12 @@ int main(int argc, char **argv) {
   // 変数26個分の領域を確保する
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 208\n");
+  
+  int local_var_stack = 0;
+  for (LVar *var = locals; var; var = var->next) {
+    local_var_stack += var->offset;
+  }
+  printf("  sub rsp, %d\n", local_var_stack);
   
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {

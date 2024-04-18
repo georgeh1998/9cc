@@ -53,4 +53,7 @@ assert 5 "a=2+3;"
 assert 4 "a=b=4;"
 assert 6 "a=1;b=2;c=a+b+3;"
 
+assert 6 "ab=1;abc=2;abcd=ab+abc+3;"
+assert 6 "aB=1;AbC=2;aBcD=aB+AbC+3;"
+
 echo OK

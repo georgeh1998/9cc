@@ -48,6 +48,16 @@ struct Node {
   int offset; // kindがDN_LVARの場合のみ使う
 };
 
+typedef struct LVar LVar;
+
+// ローカル変数の型
+struct LVar {
+  LVar *next;
+  char *name;
+  int len;
+  int offset;
+};
+
 Token *tokenize();
 
 void *program();
@@ -73,6 +83,9 @@ extern char *user_input;
 
 // 複数行分のNode
 extern Node *code[100];
+
+// ローカル変数
+extern LVar *locals;
 
 
 // Debug用関数
