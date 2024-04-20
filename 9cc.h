@@ -60,6 +60,10 @@ struct LVar {
   int offset;
 };
 
+
+void error(char *fmt, ...);
+void error_at(char *loc, char *fmt, ...);
+
 Token *tokenize();
 
 void *program();

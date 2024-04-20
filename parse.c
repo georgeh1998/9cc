@@ -45,7 +45,7 @@ Token *consume_ident() {
   return token;
 }
 
-bool *consume_return() {
+bool consume_return() {
     if (token->kind != TK_RETURN ||
       strlen("return") != token->len ||
       memcmp(token->str, "return", token->len))
