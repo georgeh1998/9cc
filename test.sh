@@ -60,4 +60,6 @@ assert 2 "return 2;"
 assert 3 "a = 3; return a;   a = 2;"
 assert 6 "returnAbc = 3; a = 3; returnAbc + a;"
 
+assert 1 "a = 1; if (a==0) 10;"
+
 echo OK

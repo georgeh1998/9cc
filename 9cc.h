@@ -6,6 +6,7 @@ typedef enum {
   TK_RESERVED, // 記号
   TK_IDENT,    // 識別子
   TK_RETURN,   // return
+  TK_IF,       // if
   TK_NUM,      // 整数トークン
   TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
@@ -37,6 +38,7 @@ typedef enum {
   ND_LT,     // <
   ND_ELT,    // =<
   ND_RETURN, // return
+  ND_IF,    // if
   ND_NUM,    // 整数
 } NodeKind;
 
@@ -92,6 +94,9 @@ extern Node *code[100];
 
 // ローカル変数
 extern LVar *locals;
+
+// label
+extern 
 
 
 // Debug用関数

@@ -54,6 +54,24 @@ bool consume_return() {
   return true;
 }
 
+bool consume_if() {
+      if (token->kind != TK_IF ||
+      strlen("if") != token->len ||
+      memcmp(token->str, "if", token->len))
+    return false;
+  token = token->next;
+  return true;
+}
+
+bool consume_else() {
+      if (token->kind != TK_IF ||
+      strlen("else") != token->len ||
+      memcmp(token->str, "else", token->len))
+    return false;
+  token = token->next;
+  return true;
+}
+
 // 次のトークンが期待している記号の時には、トークンを一つ読み進める
 void expect(char *op) {
   if (token->kind != TK_RESERVED || 
@@ -123,7 +141,13 @@ Token *tokenize() {
       cur = new_token(TK_RETURN, cur, p, 6);
       p += 6;
       continue;
-    } 
+    }
+
+    if (strncmp(p, "if", 2) == 0 && !isalnum(p[2])) {
+      cur = new_token(TK_IF, cur, p, 2);
+      p += 2;
+      continue;
+    }
 
     char *var;
     if (isalpha(*p)) {
@@ -189,7 +213,9 @@ void *program() {
   code[i] = NULL;
 }
 
-// stmt = expr ";" | "return" expr ";"
+// stmt = expr ";" 
+//       | "return" expr ";"
+//       | "if" "(" expr ")" stmt
 Node *stmt() {
   if (consume_return()) {
     Node *node = calloc(1, sizeof(Node));
@@ -197,6 +223,13 @@ Node *stmt() {
     node->lhs = expr();
     expect(";");
     return node;
+  } else if (consume_if()) {
+    expect("(");
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_IF;
+    node->lhs = expr();
+    expect(")");
+    node->rhs = stmt();
   } else {
     Node *node = expr();
     expect(";");
