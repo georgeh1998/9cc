@@ -17,7 +17,8 @@ void printToken(Token token) {
         case TK_RESERVED:
             substring(result, token.str, token.len);;
             if (result[0] == ';') {
-                printf("\n// ");    
+                printf("%s", result);
+                printf("\n ");    
             } else {
                 printf("%s", result);
                 printf(" -> ");    
@@ -32,6 +33,11 @@ void printToken(Token token) {
             printf("%s", result);
             printf(" -> ");
             break;
+        case TK_RETURN:
+            substring(result, token.str, token.len);;
+            printf("%s", result);
+            printf(" -> ");
+            break;
         case TK_EOF:
             printf("EOF");
             break;
@@ -41,7 +47,7 @@ void printToken(Token token) {
 // Debug用関数
 
 void printTokens(Token t) {
-    printf("// ");
+    printf("; ");
     do {
         printToken(t);
         t = *t.next;
