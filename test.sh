@@ -56,4 +56,8 @@ assert 6 "a=1;b=2;c=a+b+3;"
 assert 6 "ab=1;abc=2;abcd=ab+abc+3;"
 assert 6 "aB=1;AbC=2;aBcD=aB+AbC+3;"
 
+assert 2 "return 2;"
+assert 3 "a = 3; return a;   a = 2;"
+assert 6 "returnAbc = 3; a = 3; returnAbc + a;"
+
 echo OK
