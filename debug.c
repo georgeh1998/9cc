@@ -29,11 +29,8 @@ void printToken(Token token) {
             printf(" -> ");
             break;
         case TK_IDENT:
-            substring(result, token.str, token.len);;
-            printf("%s", result);
-            printf(" -> ");
-            break;
         case TK_RETURN:
+        case TK_IF:
             substring(result, token.str, token.len);;
             printf("%s", result);
             printf(" -> ");
