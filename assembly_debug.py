@@ -53,6 +53,9 @@ def executeAssembly(text):
         label = text[3:]
         if (flags["CF"]):
             next_dest_global.append(label)
+    elif (text.startswith("jmp")):
+        label = text[4:]
+        next_dest_global.append(label)
 
 
 
@@ -102,6 +105,7 @@ def main():
             line = file.readline()
             i += 1
 
+    print(labels)
     index = 0
     while index < len(lines):
         input()
