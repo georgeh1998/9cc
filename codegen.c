@@ -49,7 +49,7 @@ void gen(Node *node) {
       printf("  cmp rax, 0\n");
       printf("  je .LENDXXX\n");
       gen(node->rhs);
-      printf(".LENDXXX\n");
+      printf(".LENDXXX:\n");
       return;
   }
 
