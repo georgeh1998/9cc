@@ -63,15 +63,6 @@ bool consume_if() {
   return true;
 }
 
-bool consume_else() {
-      if (token->kind != TK_IF ||
-      strlen("else") != token->len ||
-      memcmp(token->str, "else", token->len))
-    return false;
-  token = token->next;
-  return true;
-}
-
 // 次のトークンが期待している記号の時には、トークンを一つ読み進める
 void expect(char *op) {
   if (token->kind != TK_RESERVED || 
@@ -230,6 +221,7 @@ Node *stmt() {
     node->lhs = expr();
     expect(")");
     node->rhs = stmt();
+    return node;
   } else {
     Node *node = expr();
     expect(";");
