@@ -52,11 +52,9 @@ int main(int argc, char **argv) {
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {
       gen(code[i]);
-
-    // 式の評価結果としてスタックに一つの値が残っている
-    // はずなので、スタックが溢れないようにポップしておく
-    printf("  pop rax\n");
   }
+
+  printf("  pop rax\n");  
 
   // エピローグ
   // 最後の式の結果がRAXに残っているはずなので、それが返り値となる
