@@ -45,13 +45,13 @@ int main(int argc, char **argv) {
   
   int local_var_stack = 0;
   for (LVar *var = locals; var; var = var->next) {
-    local_var_stack += var->offset;
+    local_var_stack += 8;
   }
   printf("  sub rsp, %d\n", local_var_stack);
   
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {
-    gen(code[i]);
+      gen(code[i]);
 
     // 式の評価結果としてスタックに一つの値が残っている
     // はずなので、スタックが溢れないようにポップしておく
