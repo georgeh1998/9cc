@@ -75,4 +75,9 @@ assert 10 "a = 1; x = 1; if (x) a = 10; a;"
 assert 11 "a = 1; x = 1; if (x) a = 10; x+a;"
 assert 11 "a = 1; x = 1; if (x) a = 10; a+x;"
 
+# while
+assert 0 "a = 0; while (a) 1;"
+assert 0 "a = 1; while (a) a = a - 1;"
+assert 3 "a = 2; while (a) a = a - 1; a + 3;"
+
 echo OK

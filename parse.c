@@ -63,6 +63,15 @@ bool consume_if() {
   return true;
 }
 
+bool consume_while() {
+      if (token->kind != TK_WHILE ||
+      strlen("while") != token->len ||
+      memcmp(token->str, "while", token->len))
+    return false;
+  token = token->next;
+  return true;
+}
+
 // 次のトークンが期待している記号の時には、トークンを一つ読み進める
 void expect(char *op) {
   if (token->kind != TK_RESERVED || 
@@ -140,6 +149,12 @@ Token *tokenize() {
       continue;
     }
 
+    if (strncmp(p, "while", 5) == 0 && !isalnum(p[5])) {
+      cur = new_token(TK_WHILE, cur, p, 5);
+      p += 5;
+      continue;
+    }
+
     char *var;
     if (isalpha(*p)) {
       int length = 0;
@@ -207,6 +222,7 @@ void *program() {
 // stmt = expr ";" 
 //       | "return" expr ";"
 //       | "if" "(" expr ")" stmt
+//       | "while" "(" expr ")" stmt
 Node *stmt() {
   if (consume_return()) {
     Node *node = calloc(1, sizeof(Node));
@@ -218,6 +234,14 @@ Node *stmt() {
     expect("(");
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_IF;
+    node->lhs = expr();
+    expect(")");
+    node->rhs = stmt();
+    return node;
+  } else if (consume_while()) {
+    expect("(");
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_WHILE;
     node->lhs = expr();
     expect(")");
     node->rhs = stmt();

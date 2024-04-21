@@ -51,6 +51,16 @@ void gen(Node *node) {
       gen(node->rhs);
       printf(".LENDXXX:\n");
       return;
+    case ND_WHILE:
+      printf(".WHILE1:\n");
+      gen(node->lhs);
+      printf("  pop rax\n");
+      printf("  cmp rax, 0\n");
+      printf("  je .WHILE2\n");
+      gen(node->rhs);
+      printf("  jmp .WHILE1\n");
+      printf(".WHILE2:\n");
+      return;
   }
 
   gen(node->lhs);

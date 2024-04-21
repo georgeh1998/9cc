@@ -7,6 +7,7 @@ typedef enum {
   TK_IDENT,    // 識別子
   TK_RETURN,   // return
   TK_IF,       // if
+  TK_WHILE,    // while
   TK_NUM,      // 整数トークン
   TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
@@ -25,21 +26,22 @@ struct Token {
 
 // 抽象構文木のノードの種類
 typedef enum {
-  ND_ADD,    // +
-  ND_SUB,    // -
-  ND_MUL,    // *
-  ND_DIV,    // /
-  ND_ASSIGN, // =
-  ND_LVAR,   // ローカル変数
-  ND_EQUAL,  // ==
-  ND_NEQUAL, // !=
-  ND_GT,     // >
-  ND_EGT,    // =>
-  ND_LT,     // <
-  ND_ELT,    // =<
-  ND_RETURN, // return
-  ND_IF,    // if
-  ND_NUM,    // 整数
+  ND_ADD,    // +            // 0
+  ND_SUB,    // -            // 1
+  ND_MUL,    // *            // 2
+  ND_DIV,    // /            // 3
+  ND_ASSIGN, // =            // 4
+  ND_LVAR,   // ローカル変数   // 5
+  ND_EQUAL,  // ==           // 6
+  ND_NEQUAL, // !=           // 7
+  ND_GT,     // >            // 8
+  ND_EGT,    // =>           // 9
+  ND_LT,     // <            // 10
+  ND_ELT,    // =<           // 11
+  ND_RETURN, // return       // 12
+  ND_IF,     // if           // 13
+  ND_WHILE,  // while        // 14
+  ND_NUM,    // 整数          // 15
 } NodeKind;
 
 typedef struct Node Node;
