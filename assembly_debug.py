@@ -3,15 +3,15 @@ import sys
 
 lines = []
 labels = {}
-next_dest = ""
+next_dest_global = []
 
 vars = {}
 stack = []
 register = {
     "rsp": 0,
     "rbp": 0,
-    "rax": 0,
-    "rdi": 0,
+    "rax": -1,
+    "rdi": -1,
 }
 flags = {
     "CF": 0,
@@ -52,7 +52,7 @@ def executeAssembly(text):
     elif (text.startswith("je")):
         label = text[3:]
         if (flags["CF"]):
-            next_dest = label
+            next_dest_global.append(label)
 
 
 
@@ -75,10 +75,12 @@ def execute_mov(text):
     else:
         print("no op")
 
-def print_current():
-    print("register: ", register)
-    print("stack: ", stack)
-    print("vars: ", vars)    
+def print_current(index, text):
+    print(index + 1, "行目 : ", text)
+    print("  register: ", register)
+    print("  stack: ", stack)
+    print("  vars: ", vars)
+    print("  flags: ", flags)
 
 def main():
     if len(sys.argv) > 1:
@@ -91,29 +93,29 @@ def main():
 
     with open('tmp.s', 'r', encoding='utf-8') as file:
         line = file.readline()
-        i = 1
+        i = 0
         while line:
             a_line = line.strip()
             lines.append(a_line)
             if (a_line.startswith(".")):
-                labels[a_line] = i
+                labels[a_line[:-1]] = i
             line = file.readline()
             i += 1
 
     index = 0
     while index < len(lines):
-        executeAssembly(lines[i].strip())
-        if (index + 1 == target_line):
-            print_current()
-            return
-        index += 1
-        if (next_dest == ""):
+        input()
+        text = lines[index].strip()
+        executeAssembly(text)
+        print_current(index, text)
+        if (len(next_dest_global) == 0):
+            index += 1
             continue
         else:
+            next_dest = next_dest_global.pop()
             index = labels[next_dest]
-            next_dest = ""
-    
-    print_current()
+
+    print("return: ", register["rax"])
 
 if __name__ == "__main__":
     main()
