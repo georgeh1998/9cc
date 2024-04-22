@@ -31,6 +31,8 @@ void printToken(Token token) {
         case TK_IDENT:
         case TK_RETURN:
         case TK_IF:
+        case TK_ELSE:
+        case TK_WHILE:
             substring(result, token.str, token.len);;
             printf("%s", result);
             printf(" -> ");

@@ -47,9 +47,17 @@ void gen(Node *node) {
       gen(node->lhs);
       printf("  pop rax\n");
       printf("  cmp rax, 0\n");
-      printf("  je .LENDXXX\n");
-      gen(node->rhs);
-      printf(".LENDXXX:\n");
+      printf("  je .ELSE\n");
+      if (node->branch[1]) {
+        gen(node->branch[0]);
+        printf("  jmp .END\n");
+        printf(".ELSE:\n");
+        gen(node->branch[1]);
+        printf(".END:\n");
+      } else {
+        gen(node->branch[0]);
+        printf(".ELSE:\n");
+      }
       return;
     case ND_WHILE:
       printf(".WHILE1:\n");

@@ -60,20 +60,23 @@ assert 2 "return 2;"
 assert 3 "a = 3; return a;   a = 2;"
 assert 6 "returnAbc = 3; a = 3; returnAbc + a;"
 
+# if
 assert 0 "x = 0; if (x) 1; x;"
 assert 1 "x = 1; if (x-1) 1; x;"
 assert 0 "a = 3; x = 0; if (x) a = 10; x;"
 assert 1 "a = 1; x = 1; if (x-1) a = 10; x;"
-
 assert 0 "a = 1; x = 0; if (x) a = 10; x;"
 assert 1 "a = 1; x = 0; if (x) a = 10; a;"
 assert 1 "a = 1; x = 0; if (x) a = 10; x+a;"
 assert 1 "a = 1; x = 0; if (x) a = 10; a+x;"
-
 assert 1 "a = 1; x = 1; if (x) a = 10; x;"
 assert 10 "a = 1; x = 1; if (x) a = 10; a;"
 assert 11 "a = 1; x = 1; if (x) a = 10; x+a;"
 assert 11 "a = 1; x = 1; if (x) a = 10; a+x;"
+
+# if-else
+assert 2 "x = 0; if (x) x = 4; else x = 2;"
+assert 5 "x = 1; if (x) x = 5; else x = 2;"
 
 # while
 assert 0 "a = 0; while (a) 1;"

@@ -63,6 +63,16 @@ bool consume_if() {
   return true;
 }
 
+bool has_else() {
+  if (token->kind != TK_ELSE || 
+      strlen("else") != token->len ||
+      memcmp(token->str, "else", token->len)
+  ) {
+    return false;
+  }
+  return true;
+}
+
 bool consume_while() {
       if (token->kind != TK_WHILE ||
       strlen("while") != token->len ||
@@ -149,6 +159,12 @@ Token *tokenize() {
       continue;
     }
 
+    if (strncmp(p, "else", 4) == 0 && !isalnum(p[4])) {
+      cur = new_token(TK_ELSE, cur, p, 4);
+      p += 4;
+      continue;
+    }
+
     if (strncmp(p, "while", 5) == 0 && !isalnum(p[5])) {
       cur = new_token(TK_WHILE, cur, p, 5);
       p += 5;
@@ -221,7 +237,7 @@ void *program() {
 
 // stmt = expr ";" 
 //       | "return" expr ";"
-//       | "if" "(" expr ")" stmt
+//       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "while" "(" expr ")" stmt
 Node *stmt() {
   if (consume_return()) {
@@ -236,7 +252,15 @@ Node *stmt() {
     node->kind = ND_IF;
     node->lhs = expr();
     expect(")");
-    node->rhs = stmt();
+    Node *true_stmt = stmt();
+    
+    if (has_else()) {
+      token = token->next;
+      node->branch[0] = true_stmt;
+      node->branch[1] = stmt();
+    } else {
+      node->branch[0] = true_stmt;
+    }
     return node;
   } else if (consume_while()) {
     expect("(");

@@ -7,6 +7,7 @@ typedef enum {
   TK_IDENT,    // 識別子
   TK_RETURN,   // return
   TK_IF,       // if
+  TK_ELSE,     // else
   TK_WHILE,    // while
   TK_NUM,      // 整数トークン
   TK_EOF,      // 入力の終わりを表すトークン
@@ -50,8 +51,9 @@ struct Node {
   NodeKind kind;
   Node *lhs;
   Node *rhs;
-  int val;    // kindがND_NUMの場合のみ使う
-  int offset; // kindがDN_LVARの場合のみ使う
+  int val;        // kindがND_NUMの場合のみ使う
+  int offset;     // kindがDN_LVARの場合のみ使う
+  Node *branch[2]; // kindがND_IFの場合のみ使う(if-elseのみ対応)
 };
 
 typedef struct LVar LVar;
