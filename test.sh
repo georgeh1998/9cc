@@ -83,4 +83,10 @@ assert 0 "a = 0; while (a) 1;"
 assert 0 "a = 1; while (a) a = a - 1;"
 assert 3 "a = 2; while (a) a = a - 1; a + 3;"
 
+# if
+assert 3 "x = 123; for (a = 1; a < 3; a = a + 1) x;"
+assert 10 "x = 0; for (a = 0; a < 10; a = a + 1) x = x + 1;"
+assert 10 "a = 0; x = 0; for (a = 0; a < 10; a = a + 1) x = x + 1; x;"
+assert 3 "x = 0; for (a = 2; a < 100; a = (a * a)) x = x + 1; x;"
+
 echo OK
