@@ -55,7 +55,7 @@ struct Node {
   Node *rhs;
   int val;        // kindがND_NUMの場合のみ使う
   int offset;     // kindがDN_LVARの場合のみ使う
-  Node *branch[4]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
+  Node *branch[10]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
 };
 
 typedef struct LVar LVar;
@@ -67,6 +67,13 @@ struct LVar {
   int len;
   int offset;
 };
+
+// LabelのStack番号管理用
+typedef struct {
+    int stack[100];
+    int top;
+    int currentLabel;
+} LabelStack;
 
 
 void error(char *fmt, ...);
@@ -89,6 +96,11 @@ Node *primary();
 void gen(Node *node);
 
 
+LabelStack *create_label_stack();
+int push_label(LabelStack *stack);
+int pop_label(LabelStack *stack);
+
+
 // 現在着目しているトークン
 extern Token *token;
 
@@ -101,9 +113,10 @@ extern Node *code[100];
 // ローカル変数
 extern LVar *locals;
 
-// label
-extern 
-
+// Label記憶用のStack
+extern LabelStack *labelStackIf;
+extern LabelStack *labelStackWhile;
+extern LabelStack *labelStackFor;
 
 // Debug用関数
 void printTokens(Token token);

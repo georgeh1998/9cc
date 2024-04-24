@@ -411,10 +411,18 @@ Node *primary() {
       lvar->name = tok->str;
       lvar->len = tok->len;
       if (locals) {
-        lvar->offset = locals->offset + 8;  
-        locals->next = lvar;
+        int i = 1;
+        for (LVar *var = locals; var; var = var->next) {
+          i += 1;
+          if (var->next == NULL) {
+            lvar->offset = i * 8;
+            var->next = lvar;
+            break;
+          }
+        }
       } else {
         lvar->offset = 8;
+        lvar->len = tok->len;
         locals = lvar;
       }
       node->offset = lvar->offset;

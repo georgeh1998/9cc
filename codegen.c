@@ -44,42 +44,48 @@ void gen(Node *node) {
       printf("  ret\n");
       return;
     case ND_IF:
+      int if_label = push_label(labelStackIf);
       gen(node->lhs);
       printf("  pop rax\n");
       printf("  cmp rax, 0\n");
-      printf("  je .ELSE\n");
+      printf("  je .ELSE%d\n", if_label);
       if (node->branch[1]) {
         gen(node->branch[0]);
-        printf("  jmp .END\n");
-        printf(".ELSE:\n");
+        printf("  jmp .ENDIF%d\n", if_label);
+        printf(".ELSE%d:\n", if_label);
         gen(node->branch[1]);
-        printf(".END:\n");
+        printf(".ENDIF%d:\n", if_label);
       } else {
         gen(node->branch[0]);
-        printf(".ELSE:\n");
+        printf(".ELSE%d:\n", if_label);
       }
+      int pop = pop_label(labelStackIf);
       return;
     case ND_WHILE:
-      printf(".WHILE1:\n");
+      int while_label = push_label(labelStackWhile);
+      printf(".WHILESTART%d:\n", while_label);
       gen(node->lhs);
       printf("  pop rax\n");
       printf("  cmp rax, 0\n");
-      printf("  je .WHILE2\n");
+      printf("  je .WHILEEND%d\n", while_label);
       gen(node->rhs);
-      printf("  jmp .WHILE1\n");
-      printf(".WHILE2:\n");
+      printf("  jmp .WHILESTART%d\n", while_label);
+      printf(".WHILEEND%d:\n", while_label);
+      pop_label(labelStackWhile);
       return;
     case ND_FOR:
+      int for_label = push_label(labelStackFor);
       gen(node->branch[0]);
-      printf(".FOR1:\n");
+      printf(".FORSTART%d:\n", for_label);
       gen(node->branch[1]);
       printf("  pop rax\n");
       printf("  cmp rax, 0\n");
-      printf("  je .FOR2\n");
+      printf("  je .FOREND%d\n", for_label);
       gen(node->branch[3]);
       gen(node->branch[2]);
-      printf("  jmp .FOR1\n");
-      printf(".FOR2:\n");
+      printf("  jmp .FORSTART%d\n", for_label);
+      printf(".FOREND%d:\n", for_label);
+      pop_label(labelStackFor);
       return;
   }
 

@@ -18,6 +18,11 @@ Node *code[100];
 // ローカル変数
 LVar *locals;
 
+// Label記憶用のStack
+LabelStack *labelStackIf;
+LabelStack *labelStackWhile;
+LabelStack *labelStackFor;
+
 int main(int argc, char **argv) {
   if (argc != 2) {
     fprintf(stderr, "引数の個数が正しくありません\n");
@@ -47,6 +52,10 @@ int main(int argc, char **argv) {
     local_var_stack += 8;
   }
   printf("  sub rsp, %d\n", local_var_stack);
+
+  labelStackIf = create_label_stack();
+  labelStackWhile = create_label_stack();
+  labelStackFor = create_label_stack();
   
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {

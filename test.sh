@@ -89,4 +89,14 @@ assert 10 "x = 0; for (a = 0; a < 10; a = a + 1) x = x + 1;"
 assert 10 "a = 0; x = 0; for (a = 0; a < 10; a = a + 1) x = x + 1; x;"
 assert 3 "x = 0; for (a = 2; a < 100; a = (a * a)) x = x + 1; x;"
 
+# while - if - for 複数ある場合やネスト
+assert 0 "a = 1; if (a) a = 0; if (a) a = 2; a;"
+assert 8 "a = 0; for (x = 0; x < 3; x = x + 1) a = a + 1; for (x = 0; x < 5; x = x + 1) a = a + 1; a;"
+assert 20 "a = 0; while (a < 10) a = a + 1; while (a < 20) a = a + 1; a;"
+assert 30 "a = 1; if (a) a = 0; while (a < 30) a = a + 1; a;"
+assert 5 "a = 0; for (j = 1; j < 10; j = j + 1) a = a + 1; if (a == 9) a = 5; a;"
+assert 9 "a = 0; for (x = 0; x < 3; x = x + 1) for (y = 0; y < 3; y = y + 1) a = a + 1; a;"
+assert 50 "a = 0; for (x = 0; x < 5; x = x + 1) for (y = 0; y < 10; y = y + 1) a = a + 1; a;"
+assert 3 "a = 1; b = 1; c = 1; if (a) if (b) c = 3; c;"
+
 echo OK
