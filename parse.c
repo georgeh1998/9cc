@@ -54,6 +54,22 @@ bool consume_return() {
   return true;
 }
 
+bool is_block_start() {
+    if (token->kind != TK_RESERVED ||
+      strlen("{") != token->len ||
+      memcmp(token->str, "{", token->len))
+    return false;
+  return true;  
+}
+
+bool is_block_end() {
+    if (token->kind != TK_RESERVED ||
+      strlen("}") != token->len ||
+      memcmp(token->str, "}", token->len))
+    return false;
+  return true;  
+}
+
 bool consume_if() {
       if (token->kind != TK_IF ||
       strlen("if") != token->len ||
@@ -151,7 +167,7 @@ Token *tokenize() {
       continue;
     }
 
-    if (strchr("+-*/()<>=;", *p)) {
+    if (strchr("+-*/()<>=;{}", *p)) {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }
@@ -252,6 +268,7 @@ void *program() {
 
 // stmt = expr ";" 
 //       | "return" expr ";"
+//       | "{" stmt* "}"
 //       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "while" "(" expr ")" stmt
 //       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
@@ -261,6 +278,20 @@ Node *stmt() {
     node->kind = ND_RETURN;
     node->lhs = expr();
     expect(";");
+    return node;
+  } else if (is_block_start()) {
+    expect("{");
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_BLOCK;
+    int i = 0;
+    for (;;) {
+      node->branch[i] = stmt();
+      i += 1;
+      if (is_block_end()) {
+        break;
+      }
+    }
+    expect("}");
     return node;
   } else if (consume_if()) {
     expect("(");

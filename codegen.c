@@ -87,6 +87,18 @@ void gen(Node *node) {
       printf(".FOREND%d:\n", for_label);
       pop_label(labelStackFor);
       return;
+    case ND_BLOCK:
+      int i = 0;
+      for (;;) {
+        Node *n = node->branch[i];
+        if (n) {
+          gen(n);
+          i += 1;
+        } else {
+          break;
+        }
+      }
+      return;
   }
 
   gen(node->lhs);

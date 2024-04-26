@@ -99,4 +99,14 @@ assert 9 "a = 0; for (x = 0; x < 3; x = x + 1) for (y = 0; y < 3; y = y + 1) a =
 assert 50 "a = 0; for (x = 0; x < 5; x = x + 1) for (y = 0; y < 10; y = y + 1) a = a + 1; a;"
 assert 3 "a = 1; b = 1; c = 1; if (a) if (b) c = 3; c;"
 
+# compound statement
+assert 4 "a = 1; if (a) { a = a + 1; a = a + 2; }"
+assert 16 "a = 1; if (a) { a = a + 1; a = a + 2; a = a * a; }"
+assert 19 "x = 10; for (a = 1; a < 10; a = a + 1) x = x + 1; x;"
+assert 10 "a = 3; x = 5; if (a < 10) { a = a + 1; x = x * 2; } x;"
+assert 32 "a = 0; x = 2; while (a < 4) { a = a + 1; x = x * 2; } x;"
+
+# 残課題
+# マイナスの結果、256以上の数値
+
 echo OK
