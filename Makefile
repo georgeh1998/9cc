@@ -11,7 +11,7 @@ $(OBJS): 9cc.h
 test: 9cc
 	./test.sh
 
-# make check ARG="\"12+2;\""
+# make check ARG="12+2;"
 check: 9cc
 	./test2.sh "${ARG}"
 
