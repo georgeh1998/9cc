@@ -34,15 +34,16 @@ typedef enum {
   ND_DIV,    // /            // 3
   ND_ASSIGN, // =            // 4
   ND_LVAR,   // ローカル変数   // 5
-  ND_EQUAL,  // ==           // 6
-  ND_NEQUAL, // !=           // 7
-  ND_GT,     // >            // 8
-  ND_EGT,    // =>           // 9
-  ND_LT,     // <            // 10
-  ND_ELT,    // =<           // 11
-  ND_RETURN, // return       // 12
-  ND_IF,     // if           // 13
-  ND_WHILE,  // while        // 14
+  ND_FUNC,   // 関数　　　　   // 6
+  ND_EQUAL,  // ==           // 7
+  ND_NEQUAL, // !=           // 8
+  ND_GT,     // >            // 9
+  ND_EGT,    // =>           // 10
+  ND_LT,     // <            // 11
+  ND_ELT,    // =<           // 12
+  ND_RETURN, // return       // 13
+  ND_IF,     // if           // 14
+  ND_WHILE,  // while        // 15
   ND_FOR,    // for          // 16
   ND_BLOCK,  // block        // 17
   ND_NUM,    // 整数          // 18
@@ -57,6 +58,8 @@ struct Node {
   int val;        // kindがND_NUMの場合のみ使う
   int offset;     // kindがDN_LVARの場合のみ使う
   Node *branch[10]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
+  char *name;    // 関数の場合
+  int len;       // 関数の場合
 };
 
 typedef struct LVar LVar;

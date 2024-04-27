@@ -99,6 +99,11 @@ void gen(Node *node) {
         }
       }
       return;
+    case ND_FUNC:
+      char *result;
+      strncpy(result, node->name, node->len);
+      printf("  call %s\n", result);
+      return;
   }
 
   gen(node->lhs);

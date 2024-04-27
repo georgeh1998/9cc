@@ -45,6 +45,15 @@ Token *consume_ident() {
   return token;
 }
 
+bool is_func(char *value) {
+  if (token->next->kind != TK_RESERVED ||
+      strlen(value) != token->next->len ||
+      memcmp(token->next->str, value, token->next->len))
+    return false;
+  return true;  
+}
+
+
 bool consume_return() {
     if (token->kind != TK_RETURN ||
       strlen("return") != token->len ||
@@ -421,7 +430,9 @@ Node *unary() {
   return primary();
 }
 
-// primary = num | ident | "(" expr ")"
+// primary = num 
+//           | ident("(" ")")?
+//           | "(" expr ")"
 Node *primary() {
   if (consume("(")) {
     Node *node = expr();
@@ -432,6 +443,15 @@ Node *primary() {
   Token *tok = consume_ident();
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
+    if(is_func("(")) {
+      node->kind = ND_FUNC;
+      node->name = tok->str;
+      node->len = tok->len;
+      token = token->next;
+      consume("(");
+      consume(")");
+      return node;
+    }
     node->kind = ND_LVAR;
 
     LVar *lvar = find_lvar(tok);
