@@ -100,9 +100,40 @@ void gen(Node *node) {
       }
       return;
     case ND_FUNC:
+      int arg_i = 0;
+      for (;;) {
+        Node *n = node->branch[arg_i];
+        if (n) {
+          gen(n);
+          switch (arg_i) {
+            case 0:
+              printf("  pop rdi\n");
+              break;
+            case 1:
+              printf("  pop rsi\n");
+              break;
+            case 2:
+              printf("  pop rdx\n");
+              break;
+            case 3:
+              printf("  pop rcx\n");
+              break;
+            case 4:
+              printf("  pop r8\n");
+              break;
+            case 5:
+              printf("  pop r9\n");
+              break;
+          }
+          arg_i++;
+        } else {
+          break;
+        }
+      }
       char *result;
       strncpy(result, node->name, node->len);
       printf("  call %s\n", result);
+      printf("  push rax\n");
       return;
   }
 

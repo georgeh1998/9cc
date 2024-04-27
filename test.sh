@@ -4,7 +4,7 @@ assert() {
     input="$2"
 
     ./9cc "$input" > tmp.s #コンパイラが出力するアセンブラ
-    cc -o tmp tmp.s        #出力したアセンブラを機械語に変換
+    cc -o tmp tmp.s c_func.c #出力したアセンブラを機械語に変換
     ./tmp                  #実行
     actual="$?"
 
@@ -106,7 +106,18 @@ assert 19 "x = 10; for (a = 1; a < 10; a = a + 1) x = x + 1; x;"
 assert 10 "a = 3; x = 5; if (a < 10) { a = a + 1; x = x * 2; } x;"
 assert 32 "a = 0; x = 2; while (a < 4) { a = a + 1; x = x * 2; } x;"
 
+
+# function call
+assert 0 "foo0();"
+assert 1 "foo1(1);"
+assert 3 "foo2(1, 2);"
+assert 6 "foo3(1, 2, 3);"
+assert 10 "foo4(1, 2, 3, 4);"
+assert 15 "foo5(1, 2, 3, 4, 5);"
+assert 21 "foo6(1, 2, 3, 4, 5, 6);"
+
 # 残課題
 # マイナスの結果、256以上の数値
+# callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)
 
 echo OK

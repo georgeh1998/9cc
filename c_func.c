@@ -1,21 +1,29 @@
 #include <stdio.h>
 
-int foo() {
-    printf("foo called\n");
-    return 1;
+int foo0() {
+    return 0;
 }
 
-int hoge() {
-    int i = 0;
-    printf("hoge called\n");
-    for (int j = 0; j < 10; j++) {
-        i++;
-    }
-    return i;
+int foo1(int a) {
+    return a;
 }
 
-void call_foo() {
-    int a = foo();
+int foo2(int a, int b) {
+    return a + b;
+}
 
-    printf("OK call_foo");
+int foo3(int a, int b, int c) {
+    return a + b + c;
+}
+
+int foo4(int a, int b, int c, int d) {
+    return a + b + c + d;
+}
+
+int foo5(int a, int b, int c, int d, int f) {
+    return a + b + c + d + f;
+}
+
+int foo6(int a, int b, int c, int d, int f, int g) {
+    return a + b + c + d + f + g;
 }

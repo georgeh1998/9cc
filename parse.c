@@ -45,6 +45,14 @@ Token *consume_ident() {
   return token;
 }
 
+bool is_(char *value) {
+  if (token->kind != TK_RESERVED ||
+      strlen(value) != token->len ||
+      memcmp(token->str, value, token->len))
+    return false;
+  return true;  
+}
+
 bool is_func(char *value) {
   if (token->next->kind != TK_RESERVED ||
       strlen(value) != token->next->len ||
@@ -176,7 +184,7 @@ Token *tokenize() {
       continue;
     }
 
-    if (strchr("+-*/()<>=;{}", *p)) {
+    if (strchr("+-*/()<>=;{},", *p)) {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }
@@ -431,7 +439,7 @@ Node *unary() {
 }
 
 // primary = num 
-//           | ident("(" ")")?
+//           | ident("(" (expr ",")* ")")?
 //           | "(" expr ")"
 Node *primary() {
   if (consume("(")) {
@@ -449,6 +457,15 @@ Node *primary() {
       node->len = tok->len;
       token = token->next;
       consume("(");
+      int i = 0;
+      for (;;) {
+        if (is_(")")) {
+          break;
+        }
+        node->branch[i] = expr();
+        i++;
+        consume(",");
+      }
       consume(")");
       return node;
     }
