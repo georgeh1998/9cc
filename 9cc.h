@@ -47,6 +47,8 @@ typedef enum {
   ND_FOR,    // for          // 16
   ND_BLOCK,  // block        // 17
   ND_NUM,    // 整数          // 18
+  ND_ADDR, // &          // 19
+  ND_DEREF   // *          // 20
 } NodeKind;
 
 typedef struct Node Node;
