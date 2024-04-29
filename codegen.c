@@ -15,6 +15,31 @@ void gen_lval(Node *node) {
   printf("  push rax\n");
 }
 
+void gen_function_def(Node *node) {
+  // 関数ラベルを出力
+  char label[node->len];
+  for (int i = 0; i < node->len; i++) {
+    label[i] = node->name[i];
+  }
+  label[node->len] = '\0';
+  printf("%s:\n", label);
+  printf("  push rbp\n");
+  printf("  mov rbp, rsp\n");
+  printf("  sub rsp, 0\n");
+
+  for (int i = 0; true; i++) {
+    if (node->branch[i]) {
+      gen(node->branch[i]);
+    } else {
+      break;
+    }
+  }
+
+  printf("  mov rsp, rbp\n");
+  printf("  pop rbp\n");
+  printf("  ret\n");
+}
+
 void gen(Node *node) {
 
   switch (node->kind) {
@@ -99,7 +124,16 @@ void gen(Node *node) {
         }
       }
       return;
-    case ND_FUNC:
+    case ND_FUNC_DEF:
+      // 関数の定義はどこかに溜めておいて、main関数の後に全て展開する
+      for (int f_i = 0; f_i < 100; f_i++) {
+        if (functions[f_i] == NULL) {
+          functions[f_i] = node;
+          break;
+        }
+      }
+      return;
+    case ND_FUNC_CALL:
       int arg_i = 0;
       for (;;) {
         Node *n = node->branch[arg_i];

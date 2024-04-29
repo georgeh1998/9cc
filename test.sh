@@ -116,6 +116,10 @@ assert 10 "foo4(1, 2, 3, 4);"
 assert 15 "foo5(1, 2, 3, 4, 5);"
 assert 21 "foo6(1, 2, 3, 4, 5, 6);"
 
+# function define
+assert 1 "foo() { return 1; } foo();"
+assert 230 "foo() { return 230; } foo();"
+
 
 # ポインタ、アドレス
 assert 3 "x = 3; y = &x; return *y;"

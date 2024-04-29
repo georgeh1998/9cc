@@ -34,21 +34,22 @@ typedef enum {
   ND_DIV,    // /            // 3
   ND_ASSIGN, // =            // 4
   ND_LVAR,   // ローカル変数   // 5
-  ND_FUNC,   // 関数　　　　   // 6
-  ND_EQUAL,  // ==           // 7
-  ND_NEQUAL, // !=           // 8
-  ND_GT,     // >            // 9
-  ND_EGT,    // =>           // 10
-  ND_LT,     // <            // 11
-  ND_ELT,    // =<           // 12
-  ND_RETURN, // return       // 13
-  ND_IF,     // if           // 14
-  ND_WHILE,  // while        // 15
-  ND_FOR,    // for          // 16
-  ND_BLOCK,  // block        // 17
-  ND_NUM,    // 整数          // 18
-  ND_ADDR, // &          // 19
-  ND_DEREF   // *          // 20
+  ND_FUNC_CALL,   // 関数呼び出し　　　　   // 6
+  ND_FUNC_DEF,    // 関数定義 // 7
+  ND_EQUAL,  // ==           // 8
+  ND_NEQUAL, // !=           // 9
+  ND_GT,     // >            // 10
+  ND_EGT,    // =>           // 11
+  ND_LT,     // <            // 12
+  ND_ELT,    // =<           // 13
+  ND_RETURN, // return       // 14
+  ND_IF,     // if           // 15
+  ND_WHILE,  // while        // 16
+  ND_FOR,    // for          // 17
+  ND_BLOCK,  // block        // 18
+  ND_NUM,    // 整数          // 19
+  ND_ADDR, // &          // 20
+  ND_DEREF   // *          // 21
 } NodeKind;
 
 typedef struct Node Node;
@@ -100,6 +101,7 @@ Node *primary();
 
 
 void gen(Node *node);
+void gen_function_def(Node *node);
 
 
 LabelStack *create_label_stack();
@@ -123,6 +125,8 @@ extern LVar *locals;
 extern LabelStack *labelStackIf;
 extern LabelStack *labelStackWhile;
 extern LabelStack *labelStackFor;
+
+extern Node *functions[100];
 
 // Debug用関数
 void printTokens(Token token);

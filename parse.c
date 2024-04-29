@@ -61,6 +61,31 @@ bool is_func(char *value) {
   return true;  
 }
 
+bool is_func_def() {
+  Token *t = token;
+  if (t->kind != TK_IDENT) return false;
+  t = t->next;
+  if (t->kind != TK_RESERVED ||
+      strlen("(") != t->len ||
+      memcmp(t->str, "(", t->len))
+    return false;
+  t = t->next;
+
+  while (true) {
+    if (!(t->kind != TK_RESERVED ||
+        strlen(")") != t->len ||
+        memcmp(t->str, ")", t->len))) {
+      break;
+    }
+    t = t->next;
+  }
+  if (t->next->kind != TK_RESERVED ||
+      strlen("{") != t->next->len ||
+      memcmp(t->next->str, "{", t->next->len))
+    return false;
+  return true;
+}
+
 
 bool consume_return() {
     if (token->kind != TK_RETURN ||
@@ -289,6 +314,7 @@ void *program() {
 //       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "while" "(" expr ")" stmt
 //       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
+//       | "ident "(" ")" "{ stmt }"
 Node *stmt() {
   if (consume_return()) {
     Node *node = calloc(1, sizeof(Node));
@@ -345,6 +371,25 @@ Node *stmt() {
     node->branch[2] = expr();
     expect(")");
     node->branch[3] = stmt();
+    return node;
+  } else if (is_func_def()) {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_FUNC_DEF;
+    node->name = token->str;
+    node->len = token->len;
+    token = token->next;
+    expect("(");
+    expect(")");
+    expect("{");
+    int i = 0;
+    for (;;) {
+      node->branch[i] = stmt();
+      i += 1;
+      if (is_block_end()) {
+        break;
+      }
+    }
+    expect("}");
     return node;
   } else {
     Node *node = expr();
@@ -454,7 +499,7 @@ Node *unary() {
 }
 
 // primary = num 
-//           | ident("(" (expr ",")* ")")?
+//           | ident( "(" ( expr ("," expr)* )? ")" 変数、関数呼び出し
 //           | "(" expr ")"
 Node *primary() {
   if (consume("(")) {
@@ -467,7 +512,8 @@ Node *primary() {
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
     if(is_func("(")) {
-      node->kind = ND_FUNC;
+      // function call
+      node->kind = ND_FUNC_CALL;
       node->name = tok->str;
       node->len = tok->len;
       token = token->next;

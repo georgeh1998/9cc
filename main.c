@@ -23,6 +23,9 @@ LabelStack *labelStackIf;
 LabelStack *labelStackWhile;
 LabelStack *labelStackFor;
 
+// 関数を最後に出力するため
+Node *functions[100];
+
 int main(int argc, char **argv) {
   if (argc != 2) {
     fprintf(stderr, "引数の個数が正しくありません\n");
@@ -61,13 +64,16 @@ int main(int argc, char **argv) {
   for (int i = 0; code[i]; i++) {
       gen(code[i]);
   }
-
-  printf("  pop rax\n");  
+  printf("  pop rax\n"); 
 
   // エピローグ
-  // 最後の式の結果がRAXに残っているはずなので、それが返り値となる
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");
+
+  // 関数のコード生成
+  for (int jj = 0; functions[jj]; jj++) {
+    gen_function_def(functions[jj]);
+  } 
   return 0;
 }
