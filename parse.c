@@ -275,7 +275,7 @@ Token *tokenize() {
 }
 
 LVar *find_lvar(Token *tok) {
-  for (LVar *var = locals; var; var = var->next) {
+  for (LVar *var = current_func_token->locals; var; var = var->next) {
     if (var->len == tok->len && !memcmp(tok->str, var->name, var->len)) {
       return var;
     }
@@ -311,6 +311,7 @@ void *program() {
 // function = ident "(" ")" "{" stmt* "}"
 Node *function() {
   Node *node = calloc(1, sizeof(Node));
+  current_func_token = node;
   node->kind = ND_FUNC_DEF;
   node->name = token->str;
   node->len = token->len;
@@ -541,9 +542,9 @@ Node *primary() {
       lvar = calloc(1, sizeof(LVar));
       lvar->name = tok->str;
       lvar->len = tok->len;
-      if (locals) {
+      if (current_func_token->locals) {
         int i = 1;
-        for (LVar *var = locals; var; var = var->next) {
+        for (LVar *var = current_func_token->locals; var; var = var->next) {
           i += 1;
           if (var->next == NULL) {
             lvar->offset = i * 8;
@@ -554,12 +555,11 @@ Node *primary() {
       } else {
         lvar->offset = 8;
         lvar->len = tok->len;
-        locals = lvar;
+        current_func_token->locals = lvar;
       }
       node->offset = lvar->offset;
     }
 
-    // node->offset = (tok->str[0] - 'a' + 1) * 8;
     token = token->next;
     return node;
   }

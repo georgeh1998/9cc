@@ -15,8 +15,8 @@ char *user_input;
 // 複数行分のNode
 Node *code[100];
 
-// ローカル変数
-LVar *locals;
+// 現在見ている関数のToken
+Node *current_func_token;
 
 // Label記憶用のStack
 LabelStack *labelStackIf;
@@ -34,20 +34,11 @@ int main(int argc, char **argv) {
   user_input = argv[1];
   token = tokenize();
 
-  // 正しくトークナイズできているかどうかデバッグ用
-  // printTokens(*token);
-
   program();
 
   // アセンブリの前半部分を出力
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
-  
-  int local_var_stack = 0;
-  for (LVar *var = locals; var; var = var->next) {
-    local_var_stack += 8;
-  }
-  // printf("  sub rsp, %d\n", local_var_stack);
 
   labelStackIf = create_label_stack();
   labelStackWhile = create_label_stack();

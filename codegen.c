@@ -25,7 +25,12 @@ void gen_function_def(Node *node) {
   printf("%s:\n", label);
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 0\n");
+
+  int local_var_stack = 0;
+  for (LVar *var = node->locals; var; var = var->next) {
+    local_var_stack += 8;
+  }
+  printf("  sub rsp, %d\n", local_var_stack);
 
   for (int i = 0; true; i++) {
     if (node->branch[i]) {

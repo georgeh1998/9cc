@@ -54,17 +54,6 @@ typedef enum {
 
 typedef struct Node Node;
 
-struct Node {
-  NodeKind kind;
-  Node *lhs;
-  Node *rhs;
-  int val;        // kindがND_NUMの場合のみ使う
-  int offset;     // kindがDN_LVARの場合のみ使う
-  Node *branch[10]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
-  char *name;    // 関数の場合
-  int len;       // 関数の場合
-};
-
 typedef struct LVar LVar;
 
 // ローカル変数の型
@@ -74,6 +63,19 @@ struct LVar {
   int len;
   int offset;
 };
+
+struct Node {
+  NodeKind kind;
+  Node *lhs;
+  Node *rhs;
+  int val;        // kindがND_NUMの場合のみ使う
+  int offset;     // kindがDN_LVARの場合のみ使う
+  Node *branch[10]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
+  char *name;    // 関数の場合
+  int len;       // 関数の場合
+  LVar *locals;
+};
+
 
 // LabelのStack番号管理用
 typedef struct {
@@ -118,6 +120,9 @@ extern char *user_input;
 
 // 複数行分のNode
 extern Node *code[100];
+
+// 現在見ている関数のToken
+extern Node *current_func_token;
 
 // ローカル変数
 extern LVar *locals;
