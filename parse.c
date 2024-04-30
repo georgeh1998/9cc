@@ -298,14 +298,36 @@ Node *new_node_num(int val) {
   return node;
 }
 
-// program = stmt*
+// program = function*
 void *program() {
   int i = 0;
   while (!at_eof()) {
-    code[i] = stmt();
+    code[i] = function();
     i++;
   }
   code[i] = NULL;
+}
+
+// function = ident "(" ")" "{" stmt* "}"
+Node *function() {
+  Node *node = calloc(1, sizeof(Node));
+  node->kind = ND_FUNC_DEF;
+  node->name = token->str;
+  node->len = token->len;
+  token = token->next;
+  expect("(");
+  expect(")");
+  expect("{");
+  int i = 0;
+  for (;;) {
+    node->branch[i] = stmt();
+    i += 1;
+    if (is_block_end()) {
+      break;
+    }
+  }
+  expect("}");
+  return node;
 }
 
 // stmt = expr ";" 
@@ -314,7 +336,6 @@ void *program() {
 //       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "while" "(" expr ")" stmt
 //       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
-//       | "ident "(" ")" "{ stmt }"
 Node *stmt() {
   if (consume_return()) {
     Node *node = calloc(1, sizeof(Node));
@@ -371,25 +392,6 @@ Node *stmt() {
     node->branch[2] = expr();
     expect(")");
     node->branch[3] = stmt();
-    return node;
-  } else if (is_func_def()) {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_FUNC_DEF;
-    node->name = token->str;
-    node->len = token->len;
-    token = token->next;
-    expect("(");
-    expect(")");
-    expect("{");
-    int i = 0;
-    for (;;) {
-      node->branch[i] = stmt();
-      i += 1;
-      if (is_block_end()) {
-        break;
-      }
-    }
-    expect("}");
     return node;
   } else {
     Node *node = expr();

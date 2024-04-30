@@ -35,12 +35,16 @@ void gen_function_def(Node *node) {
     }
   }
 
+  printf("  pop rax\n");
+
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");
 }
 
 void gen(Node *node) {
+
+  char result[node->len];
 
   switch (node->kind) {
     case ND_NUM:
@@ -124,15 +128,6 @@ void gen(Node *node) {
         }
       }
       return;
-    case ND_FUNC_DEF:
-      // 関数の定義はどこかに溜めておいて、main関数の後に全て展開する
-      for (int f_i = 0; f_i < 100; f_i++) {
-        if (functions[f_i] == NULL) {
-          functions[f_i] = node;
-          break;
-        }
-      }
-      return;
     case ND_FUNC_CALL:
       int arg_i = 0;
       for (;;) {
@@ -164,8 +159,8 @@ void gen(Node *node) {
           break;
         }
       }
-      char *result;
       strncpy(result, node->name, node->len);
+      result[node->len] = '\0';
       printf("  call %s\n", result);
       printf("  push rax\n");
       return;

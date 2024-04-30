@@ -23,8 +23,6 @@ LabelStack *labelStackIf;
 LabelStack *labelStackWhile;
 LabelStack *labelStackFor;
 
-// 関数を最後に出力するため
-Node *functions[100];
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -44,17 +42,12 @@ int main(int argc, char **argv) {
   // アセンブリの前半部分を出力
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
-  printf("main:\n");
-
-  // プロローグ
-  printf("  push rbp\n");
-  printf("  mov rbp, rsp\n");
   
   int local_var_stack = 0;
   for (LVar *var = locals; var; var = var->next) {
     local_var_stack += 8;
   }
-  printf("  sub rsp, %d\n", local_var_stack);
+  // printf("  sub rsp, %d\n", local_var_stack);
 
   labelStackIf = create_label_stack();
   labelStackWhile = create_label_stack();
@@ -62,18 +55,7 @@ int main(int argc, char **argv) {
   
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {
-      gen(code[i]);
+    gen_function_def(code[i]);
   }
-  printf("  pop rax\n"); 
-
-  // エピローグ
-  printf("  mov rsp, rbp\n");
-  printf("  pop rbp\n");
-  printf("  ret\n");
-
-  // 関数のコード生成
-  for (int jj = 0; functions[jj]; jj++) {
-    gen_function_def(functions[jj]);
-  } 
   return 0;
 }

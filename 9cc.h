@@ -89,6 +89,7 @@ void error_at(char *loc, char *fmt, ...);
 Token *tokenize();
 
 void *program();
+Node *function();
 Node *stmt();
 Node *expr();
 Node *assign();
@@ -125,8 +126,6 @@ extern LVar *locals;
 extern LabelStack *labelStackIf;
 extern LabelStack *labelStackWhile;
 extern LabelStack *labelStackFor;
-
-extern Node *functions[100];
 
 // Debug用関数
 void printTokens(Token token);
