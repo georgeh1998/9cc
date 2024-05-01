@@ -121,10 +121,16 @@ assert 1 "foo() { return 1; } main () { foo(); }"
 assert 230 "foo() { return 230; } main () { foo(); }"
 assert 230 "foo() { return 230; } main() { return foo(); }"
 
+
 # ポインタ、アドレス
 assert 3 "main () { x = 3; y = &x; return *y; }"
 assert 5 "main () { x = 5; y = 5; z = &y + 8; return *z; }"
-
+assert 1 "foo(a) { return a; } main() { foo(1); }"
+assert 3 "foo(a, b) { return a + b; } main() { foo(1, 2); }"
+assert 6 "foo(a, b, c) { return a + b + c; } main() { foo(1, 2, 3); }"
+assert 10 "foo(a, b, c, d) { return a + b + c + d; } main() { foo(1, 2, 3, 4); }"
+assert 15 "foo(a, b, c, d, e) { return a + b + c + d + e; } main() { foo(1, 2, 3, 4, 5); }"
+assert 21 "foo(a, b, c, d, e, f) { return a + b + c + d + e + f; } main() { foo(1, 2, 3, 4, 5, 6); }"
 
 # 残課題
 # マイナスの結果、256以上の数値

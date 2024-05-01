@@ -317,6 +317,39 @@ Node *function() {
   node->len = token->len;
   token = token->next;
   expect("(");
+  for (;;) {
+    if (is_(")")) {
+      break;
+    }
+    Token *tok = consume_ident();
+    if (tok) {
+      LVar *lvar = calloc(1, sizeof(LVar));
+      lvar->name = tok->str;
+      lvar->len = tok->len;
+      lvar->is_arg = 1;
+      if (current_func_token->locals) {
+        int i = 1;
+        for (LVar *var = current_func_token->locals; var; var = var->next) {
+          i += 1;
+          if (var->next == NULL) {
+            lvar->offset = i * 8;
+            var->next = lvar;
+            break;
+          }
+        }
+      } else {
+        lvar->offset = 8;
+        current_func_token->locals = lvar;
+      }
+    } else {
+      error("有効な変数ではありません。");
+    }
+    if (is_(")")) {
+      break;
+    }
+    token = token->next;
+    consume(",");
+  }
   expect(")");
   expect("{");
   int i = 0;
@@ -542,6 +575,7 @@ Node *primary() {
       lvar = calloc(1, sizeof(LVar));
       lvar->name = tok->str;
       lvar->len = tok->len;
+      lvar->is_arg = 0;
       if (current_func_token->locals) {
         int i = 1;
         for (LVar *var = current_func_token->locals; var; var = var->next) {

@@ -62,6 +62,7 @@ struct LVar {
   char *name;
   int len;
   int offset;
+  int is_arg; // 0: ローカル変数 1:引数
 };
 
 struct Node {

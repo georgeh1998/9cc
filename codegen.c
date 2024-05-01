@@ -22,16 +22,51 @@ void gen_function_def(Node *node) {
     label[i] = node->name[i];
   }
   label[node->len] = '\0';
+
+  // 関数プロローグ&変数のメモリ確保
   printf("%s:\n", label);
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-
   int local_var_stack = 0;
   for (LVar *var = node->locals; var; var = var->next) {
     local_var_stack += 8;
   }
   printf("  sub rsp, %d\n", local_var_stack);
 
+  // 関数の引数のメモリ割り当て
+  int i_arg = 0;
+  for (LVar *var = node->locals; var; var = var->next) {
+    if (var->is_arg) {
+      printf("  mov rax, rbp\n");
+      printf("  sub rax, %d\n", var->offset);
+      printf("  push rax\n");
+      switch (i_arg) {
+        case 0:
+          printf("  mov [rax], rdi\n");
+          break;
+        case 1:
+          printf("  mov [rax], rsi\n");
+          break;
+        case 2:
+          printf("  mov [rax], rdx\n");
+          break;
+        case 3:
+          printf("  mov [rax], rcx\n");
+          break;
+        case 4:
+          printf("  mov [rax], r8\n");
+          break;
+        case 5:
+          printf("  mov [rax], r9\n");
+          break;
+      }
+      i_arg++;
+    } else {
+      break;
+    }
+  }
+
+  // 関数のブロック
   for (int i = 0; true; i++) {
     if (node->branch[i]) {
       gen(node->branch[i]);
@@ -42,6 +77,7 @@ void gen_function_def(Node *node) {
 
   printf("  pop rax\n");
 
+  // 関数エピローグ
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");
