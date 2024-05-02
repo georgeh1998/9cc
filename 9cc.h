@@ -71,7 +71,7 @@ struct Node {
   Node *rhs;
   int val;        // kindがND_NUMの場合のみ使う
   int offset;     // kindがDN_LVARの場合のみ使う
-  Node *branch[10]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
+  Node *branch[1000]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
   char *name;    // 関数の場合
   int len;       // 関数の場合
   LVar *locals;
