@@ -120,7 +120,8 @@ assert 21 "main () { foo6(1, 2, 3, 4, 5, 6); }"
 assert 1 "foo() { return 1; } main () { foo(); }"
 assert 230 "foo() { return 230; } main () { foo(); }"
 assert 230 "foo() { return 230; } main() { return foo(); }"
-
+assert 55 "fibonacci(n) { a = 0; b = 1; if (n == 0) { return a; } if (n == 1) { return b; } for (i = 0; i < (n-1); i = i + 1) { tmp = a; a = b; b = tmp + b; } return b; } main() { return fibonacci(10); }"
+assert 55 "fibonacci(n) { if (n == 0) { return 0; } if (n == 1) { return 1; } return fibonacci(n-1) + fibonacci(n-2); } main() { return fibonacci(10); }"
 
 # ポインタ、アドレス
 assert 3 "main () { x = 3; y = &x; return *y; }"
@@ -136,6 +137,5 @@ assert 21 "foo(a, b, c, d, e, f) { return a + b + c + d + e + f; } main() { foo(
 # マイナスの結果、256以上の数値
 # callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)
 
-# 関数呼び出しの引数に演算がある場合
 
 echo OK
