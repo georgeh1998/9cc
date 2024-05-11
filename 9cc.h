@@ -51,12 +51,19 @@ typedef enum {
   ND_NUM,    // 整数          // 19
   ND_ADDR, // &          // 20
   ND_DEREF,   // *          // 21
-  ND_TYPE,   // int         // 22
+  ND_LVAR_DEF,   // int         // 22
 } NodeKind;
+
+struct Type {
+  enum {INT, PTR} ty;
+  struct Type *ptr_to;
+};
 
 typedef struct Node Node;
 
 typedef struct LVar LVar;
+
+typedef struct Type Type;
 
 // ローカル変数の型
 struct LVar {
@@ -65,6 +72,7 @@ struct LVar {
   int len;
   int offset;
   int is_arg; // 0: ローカル変数 1:引数
+  Type *type;
 };
 
 struct Node {

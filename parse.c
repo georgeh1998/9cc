@@ -149,14 +149,23 @@ bool consume_for() {
   return true;
 }
 
-bool consume_type(char *type) {
+bool consume_type() {
   if (token->kind != TK_TYPE ||
-      strlen(type) != token->len ||
-      memcmp(token->str, type, token->len))
+      strlen("int") != token->len ||
+      memcmp(token->str, "int", token->len))
     return false;
   token = token->next;
   return true;
 }
+
+bool is_type(char *type) {
+  if (token->kind != TK_TYPE ||
+      strlen(type) != token->len ||
+      memcmp(token->str, type, token->len))
+    return false;
+  return true;
+}
+
 
 // 次のトークンが期待している記号の時には、トークンを一つ読み進める
 void expect(char *op) {
@@ -287,6 +296,37 @@ Token *tokenize() {
 
   new_token(TK_EOF, cur, p, 0);
   return head.next;
+}
+
+
+Type *connect_deref(Type *type) {
+  Type *new = calloc(1, sizeof(Type));
+  new->ty = PTR;
+  new->ptr_to = type;
+  return new;
+}
+
+// tokenが型定義の時に呼ぶ
+// 下記の場合 intで呼ばれる、tokenはND_TYPE
+// ex: int x;
+// ex: int *x;
+Type *find_type() {
+  if (token->kind != TK_TYPE) {
+    error("有効な型ではありません。");
+  }
+
+  Type *type = calloc(1, sizeof(Type));
+  type->ty = INT;
+  token = token->next;
+  for (;;) {
+    if (is_("*")) {
+      type = connect_deref(type);
+      token = token->next;
+    } else {
+      break;
+    }
+  }
+  return type;
 }
 
 LVar *find_lvar(Token *tok) {
@@ -450,7 +490,8 @@ Node *stmt() {
     expect(")");
     node->branch[3] = stmt();
     return node;
-  } else if (consume_type("int")) {
+  } else if (is_type("int")) {
+    Type *type = find_type();
     Token *tok = consume_ident();
     if (tok == NULL) {
       error("型定義の後に変数名がありません。");
@@ -463,6 +504,7 @@ Node *stmt() {
       lvar->name = tok->str;
       lvar->len = tok->len;
       lvar->is_arg = 1;
+      lvar->type = type;
       if (current_func_token->locals) {
         int i = 1;
         for (LVar *var = current_func_token->locals; var; var = var->next) {
@@ -477,19 +519,11 @@ Node *stmt() {
         lvar->offset = 8;
         current_func_token->locals = lvar;
       }
-      Node *node_assign = calloc(1, sizeof(Node));
-      node_assign->kind = ND_ASSIGN;
-
-      Node *node_ident = calloc(1, sizeof(Node));
-      node_ident->kind = ND_LVAR;
-      node_ident->offset = lvar->offset;
-
-      Node *node_init = calloc(1, sizeof(Node));
-      node_init->kind = ND_NUM;
-      node_init->val = 0;
-
-      node_assign->lhs = node_ident;
-      node_assign->rhs = node_init;
+      Node *node_lvar_def = calloc(1, sizeof(Node));
+      node_lvar_def->kind = ND_LVAR_DEF;
+      node_lvar_def->offset = lvar->offset;
+      node_lvar_def->locals = lvar;
+      return node_lvar_def;
     }
   } else {
     Node *node = expr();
