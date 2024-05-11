@@ -149,6 +149,15 @@ bool consume_for() {
   return true;
 }
 
+bool consume_type(char *type) {
+  if (token->kind != TK_TYPE ||
+      strlen(type) != token->len ||
+      memcmp(token->str, type, token->len))
+    return false;
+  token = token->next;
+  return true;
+}
+
 // 次のトークンが期待している記号の時には、トークンを一つ読み進める
 void expect(char *op) {
   if (token->kind != TK_RESERVED || 
@@ -331,6 +340,9 @@ Node *function() {
     if (is_(")")) {
       break;
     }
+    if (!consume_type("int")) {
+      error("関数の引数に型の定義がありません。");
+    }
     Token *tok = consume_ident();
     if (tok) {
       LVar *lvar = calloc(1, sizeof(LVar));
@@ -375,6 +387,7 @@ Node *function() {
 }
 
 // stmt = expr ";" 
+//       | int ident ";"
 //       | "return" expr ";"
 //       | "{" stmt* "}"
 //       | "if" "(" expr ")" stmt ("else" stmt)?
@@ -437,6 +450,8 @@ Node *stmt() {
     expect(")");
     node->branch[3] = stmt();
     return node;
+  } else if (consume_type("int")) {
+
   } else {
     Node *node = expr();
     expect(";");

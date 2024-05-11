@@ -120,18 +120,18 @@ assert 21 "int main () { foo6(1, 2, 3, 4, 5, 6); }"
 assert 1 "int foo() { return 1; } int main () { foo(); }"
 assert 230 "int foo() { return 230; } int main () { foo(); }"
 assert 230 "int foo() { return 230; } int main() { return foo(); }"
-assert 55 "int fibonacci(n) { a = 0; b = 1; if (n == 0) { return a; } if (n == 1) { return b; } for (i = 0; i < (n-1); i = i + 1) { tmp = a; a = b; b = tmp + b; } return b; } int main() { return fibonacci(10); }"
-assert 55 "int fibonacci(n) { if (n == 0) { return 0; } if (n == 1) { return 1; } return fibonacci(n-1) + fibonacci(n-2); } int main() { return fibonacci(10); }"
+assert 55 "int fibonacci(int n) { a = 0; b = 1; if (n == 0) { return a; } if (n == 1) { return b; } for (i = 0; i < (n-1); i = i + 1) { tmp = a; a = b; b = tmp + b; } return b; } int main() { return fibonacci(10); }"
+assert 55 "int fibonacci(int n) { if (n == 0) { return 0; } if (n == 1) { return 1; } return fibonacci(n-1) + fibonacci(n-2); } int main() { return fibonacci(10); }"
 
 # ポインタ、アドレス
 assert 3 "int main () { x = 3; y = &x; return *y; }"
 assert 5 "int main () { x = 5; y = 5; z = &y + 8; return *z; }"
-assert 1 "int foo(a) { return a; } int main() { foo(1); }"
-assert 3 "int foo(a, b) { return a + b; } int main() { foo(1, 2); }"
-assert 6 "int foo(a, b, c) { return a + b + c; } int main() { foo(1, 2, 3); }"
-assert 10 "int foo(a, b, c, d) { return a + b + c + d; } int main() { foo(1, 2, 3, 4); }"
-assert 15 "int foo(a, b, c, d, e) { return a + b + c + d + e; } int main() { foo(1, 2, 3, 4, 5); }"
-assert 21 "int foo(a, b, c, d, e, f) { return a + b + c + d + e + f; } int main() { foo(1, 2, 3, 4, 5, 6); }"
+assert 1 "int foo(int a) { return a; } int main() { foo(1); }"
+assert 3 "int foo(int a, int b) { return a + b; } int main() { foo(1, 2); }"
+assert 6 "int foo(int a, int b, int c) { return a + b + c; } int main() { foo(1, 2, 3); }"
+assert 10 "int foo(int a, int b, int c, int d) { return a + b + c + d; } int main() { foo(1, 2, 3, 4); }"
+assert 15 "int foo(int a, int b, int c, int d, int e) { return a + b + c + d + e; } int main() { foo(1, 2, 3, 4, 5); }"
+assert 21 "int foo(int a, int b, int c, int d, int e, int f) { return a + b + c + d + e + f; } int main() { foo(1, 2, 3, 4, 5, 6); }"
 
 # 残課題
 # マイナスの結果、256以上の数値
