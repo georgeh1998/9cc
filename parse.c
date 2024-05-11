@@ -244,6 +244,12 @@ Token *tokenize() {
       continue;
     }
 
+    if (strncmp(p, "int", 3) == 0 && !isalnum(p[3])) {
+      cur = new_token(TK_TYPE, cur, p, 3);
+      p += 3;
+      continue;
+    }
+
     char *var;
     if (isalpha(*p)) {
       int length = 0;
@@ -310,6 +316,10 @@ void *program() {
 
 // function = ident "(" ")" "{" stmt* "}"
 Node *function() {
+  if (token->kind != TK_TYPE) {
+    error("関数の戻り値の型が定義されていません。");
+  }
+  token = token->next;
   Node *node = calloc(1, sizeof(Node));
   current_func_token = node;
   node->kind = ND_FUNC_DEF;
