@@ -451,7 +451,46 @@ Node *stmt() {
     node->branch[3] = stmt();
     return node;
   } else if (consume_type("int")) {
+    Token *tok = consume_ident();
+    if (tok == NULL) {
+      error("型定義の後に変数名がありません。");
+    }
+    LVar *lvar = find_lvar(tok);
+    if (lvar) {
+      error("既に同名の変数は定義されています。");
+    } else {
+      LVar *lvar = calloc(1, sizeof(LVar));
+      lvar->name = tok->str;
+      lvar->len = tok->len;
+      lvar->is_arg = 1;
+      if (current_func_token->locals) {
+        int i = 1;
+        for (LVar *var = current_func_token->locals; var; var = var->next) {
+          i += 1;
+          if (var->next == NULL) {
+            lvar->offset = i * 8;
+            var->next = lvar;
+            break;
+          }
+        }
+      } else {
+        lvar->offset = 8;
+        current_func_token->locals = lvar;
+      }
+      Node *node_assign = calloc(1, sizeof(Node));
+      node_assign->kind = ND_ASSIGN;
 
+      Node *node_ident = calloc(1, sizeof(Node));
+      node_ident->kind = ND_LVAR;
+      node_ident->offset = lvar->offset;
+
+      Node *node_init = calloc(1, sizeof(Node));
+      node_init->kind = ND_NUM;
+      node_init->val = 0;
+
+      node_assign->lhs = node_ident;
+      node_assign->rhs = node_init;
+    }
   } else {
     Node *node = expr();
     expect(";");
@@ -597,26 +636,7 @@ Node *primary() {
     if (lvar) {
       node->offset = lvar->offset;
     } else {
-      lvar = calloc(1, sizeof(LVar));
-      lvar->name = tok->str;
-      lvar->len = tok->len;
-      lvar->is_arg = 0;
-      if (current_func_token->locals) {
-        int i = 1;
-        for (LVar *var = current_func_token->locals; var; var = var->next) {
-          i += 1;
-          if (var->next == NULL) {
-            lvar->offset = i * 8;
-            var->next = lvar;
-            break;
-          }
-        }
-      } else {
-        lvar->offset = 8;
-        lvar->len = tok->len;
-        current_func_token->locals = lvar;
-      }
-      node->offset = lvar->offset;
+      error("未定義の変数を利用しています。");
     }
 
     token = token->next;
