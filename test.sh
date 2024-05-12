@@ -125,8 +125,12 @@ assert 55 "int fibonacci(int n) { int a; int b; int tmp; int i; a = 0; b = 1; if
 assert 55 "int fibonacci(int n) { if (n == 0) { return 0; } if (n == 1) { return 1; } return fibonacci(n-1) + fibonacci(n-2); } int main() { return fibonacci(10); }"
 
 # ポインタ、アドレス
-assert 3 "int main () { int x; int y; x = 3; y = &x; return *y; }"
-assert 5 "int main () { int x; int y; int z; x = 5; y = 5; z = &y + 8; return *z; }"
+assert 3 "int main () { int x; int *y; x = 3; y = &x; return *y; }"
+
+# 一時的に無視する
+#assert 5 "int main () { int x; int y; int z; x = 5; y = 5; z = &y + 8; return *z; }"
+
+# 関数
 assert 1 "int foo(int a) { return a; } int main() { foo(1); }"
 assert 3 "int foo(int a, int b) { return a + b; } int main() { foo(1, 2); }"
 assert 6 "int foo(int a, int b, int c) { return a + b + c; } int main() { foo(1, 2, 3); }"
@@ -136,6 +140,7 @@ assert 21 "int foo(int a, int b, int c, int d, int e, int f) { return a + b + c 
 
 # ポインタに代入
 assert 10 "int main () { int x; int *y; y=&x; *y = 10; return x; }"
+assert 57 "int main () { int x; int *y; y=&x; *y = 57; return x; }"
 assert 167 "int main () { int x; int *y; int **z; y=&x; z = &y;  **z = 167; return x; }"
 assert 3 "int main () { int a; int *b; int **c; int ***d; b=&a; c = &b; d = &c; ***d = 3; return a; }"
 

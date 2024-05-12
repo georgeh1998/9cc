@@ -149,15 +149,6 @@ bool consume_for() {
   return true;
 }
 
-bool consume_type() {
-  if (token->kind != TK_TYPE ||
-      strlen("int") != token->len ||
-      memcmp(token->str, "int", token->len))
-    return false;
-  token = token->next;
-  return true;
-}
-
 bool is_type(char *type) {
   if (token->kind != TK_TYPE ||
       strlen(type) != token->len ||
@@ -310,7 +301,7 @@ Type *connect_deref(Type *type) {
 // 下記の場合 intで呼ばれる、tokenはND_TYPE
 // ex: int x;
 // ex: int *x;
-Type *find_type() {
+Type *consume_type() {
   if (token->kind != TK_TYPE) {
     error("有効な型ではありません。");
   }
@@ -380,27 +371,35 @@ Node *function() {
     if (is_(")")) {
       break;
     }
-    if (!consume_type("int")) {
+    if (!is_type("int")) {
       error("関数の引数に型の定義がありません。");
     }
+    Type *type = consume_type();
     Token *tok = consume_ident();
     if (tok) {
       LVar *lvar = calloc(1, sizeof(LVar));
       lvar->name = tok->str;
       lvar->len = tok->len;
       lvar->is_arg = 1;
+      lvar->type = type;
       if (current_func_token->locals) {
-        int i = 1;
         for (LVar *var = current_func_token->locals; var; var = var->next) {
-          i += 1;
           if (var->next == NULL) {
-            lvar->offset = i * 8;
             var->next = lvar;
+            if (lvar->type->ty == INT) {
+              lvar->offset = var->offset + 4;
+            } else {
+              lvar->offset = var->offset + 8;  
+            }
             break;
           }
         }
       } else {
-        lvar->offset = 8;
+        if (lvar->type->ty == INT) {
+          lvar->offset = 4;
+        } else {
+          lvar->offset = 8;  
+        }
         current_func_token->locals = lvar;
       }
     } else {
@@ -491,7 +490,7 @@ Node *stmt() {
     node->branch[3] = stmt();
     return node;
   } else if (is_type("int")) {
-    Type *type = find_type();
+    Type *type = consume_type();
     Token *tok = consume_ident();
     if (tok == NULL) {
       error("型定義の後に変数名がありません。");
@@ -506,17 +505,23 @@ Node *stmt() {
       lvar->is_arg = 0;
       lvar->type = type;
       if (current_func_token->locals) {
-        int i = 1;
         for (LVar *var = current_func_token->locals; var; var = var->next) {
-          i += 1;
           if (var->next == NULL) {
-            lvar->offset = i * 8;
             var->next = lvar;
+            if (lvar->type->ty == INT) {
+              lvar->offset = var->offset + 4;
+            } else {
+              lvar->offset = var->offset + 8;  
+            }
             break;
           }
         }
       } else {
-        lvar->offset = 8;
+        if (lvar->type->ty == INT) {
+          lvar->offset = 4;
+        } else {
+          lvar->offset = 8;  
+        }
         current_func_token->locals = lvar;
       }
       Node *node_lvar_def = calloc(1, sizeof(Node));
@@ -672,7 +677,6 @@ Node *primary() {
     if (lvar) {
       node->offset = lvar->offset;
       node->locals = lvar;
-
     } else {
       error("未定義の変数を利用しています。");
     }

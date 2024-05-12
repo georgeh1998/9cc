@@ -6,6 +6,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+Type *find_type(Node *node) {
+  
+  for (Node *n = node; n; n = n->lhs) {
+    if (n->kind == ND_LVAR) {
+      return n->locals->type;
+    }
+  }
+}
+
 void gen_lval(Node *node) {
   if (node->kind == ND_DEREF) {
     gen(node->lhs);
@@ -34,7 +43,7 @@ void gen_function_def(Node *node) {
   printf("  mov rbp, rsp\n");
   int local_var_stack = 0;
   for (LVar *var = node->locals; var; var = var->next) {
-    local_var_stack += 8;
+    local_var_stack = var->offset;
   }
   printf("  sub rsp, %d\n", local_var_stack);
 
@@ -47,22 +56,34 @@ void gen_function_def(Node *node) {
       printf("  push rax\n");
       switch (i_arg) {
         case 0:
-          printf("  mov [rax], rdi\n");
+          // TODO ポインタ引数に対応する
+          // printf("  mov [rax], rdi\n");
+          printf("  mov [rax], edi\n");
           break;
         case 1:
-          printf("  mov [rax], rsi\n");
+          // TODO ポインタ引数に対応する
+          // printf("  mov [rax], rsi\n");
+          printf("  mov [rax], esi\n");
           break;
         case 2:
-          printf("  mov [rax], rdx\n");
+          // TODO ポインタ引数に対応する
+          // printf("  mov [rax], rdx\n");
+          printf("  mov [rax], edx\n");
           break;
         case 3:
-          printf("  mov [rax], rcx\n");
+          // TODO ポインタ引数に対応する
+          // printf("  mov [rax], rcx\n");
+          printf("  mov [rax], ecx\n");
           break;
         case 4:
-          printf("  mov [rax], r8\n");
+          // TODO ポインタ引数に対応する
+          // printf("  mov [rax], r8\n");
+          printf("  mov [rax], r8d\n");
           break;
         case 5:
-          printf("  mov [rax], r9\n");
+          // TODO ポインタ引数に対応する
+          // printf("  mov [rax], r9\n");
+          printf("  mov [rax], r9d\n");
           break;
       }
       i_arg++;
@@ -99,7 +120,11 @@ void gen(Node *node) {
     case ND_LVAR:
       gen_lval(node);
       printf("  pop rax\n");
-      printf("  mov rax, [rax]\n");
+      if (node->locals->type->ty == INT) {
+        printf("  mov eax, [rax]\n");
+      } else {
+        printf("  mov rax, [rax]\n");
+      }
       printf("  push rax\n");
       return;
     case ND_ASSIGN:
@@ -108,7 +133,12 @@ void gen(Node *node) {
 
       printf("  pop rdi\n");
       printf("  pop rax\n");
-      printf("  mov [rax], rdi\n");
+      
+      if (find_type(node->lhs)->ty == INT) {
+        printf("  mov [rax], edi\n");
+      } else {
+        printf("  mov [rax], rdi\n");
+      }
       printf("  push rdi\n");
       return;
     case ND_RETURN:
