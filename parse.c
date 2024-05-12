@@ -503,7 +503,7 @@ Node *stmt() {
       LVar *lvar = calloc(1, sizeof(LVar));
       lvar->name = tok->str;
       lvar->len = tok->len;
-      lvar->is_arg = 1;
+      lvar->is_arg = 0;
       lvar->type = type;
       if (current_func_token->locals) {
         int i = 1;
@@ -523,6 +523,8 @@ Node *stmt() {
       node_lvar_def->kind = ND_LVAR_DEF;
       node_lvar_def->offset = lvar->offset;
       node_lvar_def->locals = lvar;
+      token = token->next;
+      expect(";");
       return node_lvar_def;
     }
   } else {
@@ -669,6 +671,8 @@ Node *primary() {
     LVar *lvar = find_lvar(tok);
     if (lvar) {
       node->offset = lvar->offset;
+      node->locals = lvar;
+
     } else {
       error("未定義の変数を利用しています。");
     }

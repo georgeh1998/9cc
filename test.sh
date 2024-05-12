@@ -134,6 +134,11 @@ assert 10 "int foo(int a, int b, int c, int d) { return a + b + c + d; } int mai
 assert 15 "int foo(int a, int b, int c, int d, int e) { return a + b + c + d + e; } int main() { foo(1, 2, 3, 4, 5); }"
 assert 21 "int foo(int a, int b, int c, int d, int e, int f) { return a + b + c + d + e + f; } int main() { foo(1, 2, 3, 4, 5, 6); }"
 
+# ポインタに代入
+assert 10 "int main () { int x; int *y; y=&x; *y = 10; return x; }"
+assert 167 "int main () { int x; int *y; int **z; y=&x; z = &y;  **z = 167; return x; }"
+assert 3 "int main () { int a; int *b; int **c; int ***d; b=&a; c = &b; d = &c; ***d = 3; return a; }"
+
 # 残課題
 # マイナスの結果、256以上の数値
 # callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)
