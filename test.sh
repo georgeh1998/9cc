@@ -126,9 +126,7 @@ assert 55 "int fibonacci(int n) { if (n == 0) { return 0; } if (n == 1) { return
 
 # ポインタ、アドレス
 assert 3 "int main () { int x; int *y; x = 3; y = &x; return *y; }"
-
-# 一時的に無視する
-#assert 5 "int main () { int x; int y; int z; x = 5; y = 5; z = &y + 8; return *z; }"
+assert 5 "int main () { int x; int y; int *z; x = 5; y = 5; z = &y + 4; return *z; }"
 
 # 関数
 assert 1 "int foo(int a) { return a; } int main() { foo(1); }"
