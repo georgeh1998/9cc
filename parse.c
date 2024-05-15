@@ -149,6 +149,15 @@ bool consume_for() {
   return true;
 }
 
+bool consume_sizeof() {
+  if (token->kind != TK_SIZEOF ||
+      strlen("sizeof") != token->len ||
+      memcmp(token->str, "sizeof", token->len))
+    return false;
+  token = token->next;
+  return true;
+}
+
 bool is_type(char *type) {
   if (token->kind != TK_TYPE ||
       strlen(type) != token->len ||
@@ -256,6 +265,12 @@ Token *tokenize() {
     if (strncmp(p, "int", 3) == 0 && !isalnum(p[3])) {
       cur = new_token(TK_TYPE, cur, p, 3);
       p += 3;
+      continue;
+    }
+
+    if (strncmp(p, "sizeof", 6) == 0 && !isalnum(p[6])) {
+      cur = new_token(TK_SIZEOF, cur, p, 6);
+      p += 6;
       continue;
     }
 
@@ -665,6 +680,7 @@ Node *mul() {
 //       | "-"? primary
 //       | "*" unary
 //       | "&" unary
+//       | "sizeof" unary
 //       | primary
 Node *unary() {
   if (consume("+")) {
@@ -697,6 +713,17 @@ Node *unary() {
     type->ptr_to = addr_node->type;
 
     return new_node(ND_ADDR, addr_node, NULL, type);
+  }
+
+  if (consume_sizeof()) {
+    Node *sizeof_unary = unary();
+    int size;
+    if (sizeof_unary->type->ty == INT) {
+      size = 4;
+    } else {
+      size = 8;
+    }
+    return new_node_num(size);
   }
 
   return primary();

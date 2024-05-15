@@ -144,6 +144,13 @@ assert 3 "int main () { int a; int *b; int **c; int ***d; b=&a; c = &b; d = &c; 
 assert 1 "int main () { int x; int *y; x = 123; y = &x; y + 1 == &x + 1; }"
 
 
+# sizeof
+assert 4 "int main() { sizeof 1; }"
+assert 4 "int main() { sizeof(1); }"
+assert 4 "int main() { sizeof(2*2+3); }"
+assert 4 "int main() { int a; sizeof a; }"
+assert 8 "int main() { int *b; sizeof b; }"
+
 # 残課題
 # マイナスの結果、256以上の数値
 # callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)

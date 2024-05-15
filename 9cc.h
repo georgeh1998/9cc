@@ -12,6 +12,7 @@ typedef enum {
   TK_FOR,      // for
   TK_NUM,      // 整数トークン
   TK_TYPE,     // 型
+  TK_SIZEOF,   // sizeof
   TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
 
