@@ -85,6 +85,17 @@ struct Node {
   char *name;    // 関数の場合
   int len;       // 関数の場合
   LVar *locals;
+  Type *type;
+};
+
+typedef struct FunctionSig FunctionSig;
+
+// 関数の型安全を保証するための構造体
+// TODO 引数型も確認する
+struct FunctionSig {
+  FunctionSig *next;
+  char *name;
+  Type *return_type;
 };
 
 
@@ -132,6 +143,9 @@ extern char *user_input;
 // 複数行分のNode
 extern Node *code[100];
 
+// 関数のsignature情報を入れる
+extern FunctionSig *function_sig;
+
 // 現在見ている関数のToken
 extern Node *current_func_token;
 
@@ -142,6 +156,12 @@ extern LVar *locals;
 extern LabelStack *labelStackIf;
 extern LabelStack *labelStackWhile;
 extern LabelStack *labelStackFor;
+
+
+// util
+void add_function_sig(Node *node);
+Type *get_function_sig(Node *node);
+
 
 // Debug用関数
 void printTokens(Token token);

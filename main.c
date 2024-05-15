@@ -15,6 +15,9 @@ char *user_input;
 // 複数行分のNode
 Node *code[100];
 
+// 関数のsignature情報を入れる
+FunctionSig *function_sig;
+
 // 現在見ている関数のToken
 Node *current_func_token;
 

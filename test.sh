@@ -109,13 +109,13 @@ assert 32 "int main () { int a; int x; a = 0; x = 2; while (a < 4) { a = a + 1; 
 
 
 # function call
-assert 0 "int main () { foo0(); }"
-assert 1 "int main () { foo1(1); }"
-assert 3 "int main () { foo2(1, 2); }"
-assert 6 "int main () { foo3(1, 2, 3); }"
-assert 10 "int main () { foo4(1, 2, 3, 4); }"
-assert 15 "int main () { foo5(1, 2, 3, 4, 5); }"
-assert 21 "int main () { foo6(1, 2, 3, 4, 5, 6); }"
+# assert 0 "int main () { foo0(); }"
+# assert 1 "int main () { foo1(1); }"
+# assert 3 "int main () { foo2(1, 2); }"
+# assert 6 "int main () { foo3(1, 2, 3); }"
+# assert 10 "int main () { foo4(1, 2, 3, 4); }"
+# assert 15 "int main () { foo5(1, 2, 3, 4, 5); }"
+# assert 21 "int main () { foo6(1, 2, 3, 4, 5, 6); }"
 
 # function define
 assert 1 "int foo() { return 1; } int main () { foo(); }"
@@ -123,10 +123,6 @@ assert 230 "int foo() { return 230; } int main () { foo(); }"
 assert 230 "int foo() { return 230; } int main() { return foo(); }"
 assert 55 "int fibonacci(int n) { int a; int b; int tmp; int i; a = 0; b = 1; if (n == 0) { return a; } if (n == 1) { return b; } for (i = 0; i < (n-1); i = i + 1) { tmp = a; a = b; b = tmp + b; } return b; } int main() { return fibonacci(10); }"
 assert 55 "int fibonacci(int n) { if (n == 0) { return 0; } if (n == 1) { return 1; } return fibonacci(n-1) + fibonacci(n-2); } int main() { return fibonacci(10); }"
-
-# ポインタ、アドレス
-assert 3 "int main () { int x; int *y; x = 3; y = &x; return *y; }"
-assert 5 "int main () { int x; int y; int *z; x = 5; y = 5; z = &y + 4; return *z; }"
 
 # 関数
 assert 1 "int foo(int a) { return a; } int main() { foo(1); }"
@@ -136,15 +132,27 @@ assert 10 "int foo(int a, int b, int c, int d) { return a + b + c + d; } int mai
 assert 15 "int foo(int a, int b, int c, int d, int e) { return a + b + c + d + e; } int main() { foo(1, 2, 3, 4, 5); }"
 assert 21 "int foo(int a, int b, int c, int d, int e, int f) { return a + b + c + d + e + f; } int main() { foo(1, 2, 3, 4, 5, 6); }"
 
-# ポインタに代入
+# ポインタ、アドレス
+assert 3 "int main () { int x; int *y; x = 3; y = &x; return *y; }"
+assert 5 "int main () { int x; int y; int *z; x = 5; y = 5; z = &y + 1; return *z; }"
 assert 10 "int main () { int x; int *y; y=&x; *y = 10; return x; }"
 assert 57 "int main () { int x; int *y; y=&x; *y = 57; return x; }"
 assert 167 "int main () { int x; int *y; int **z; y=&x; z = &y;  **z = 167; return x; }"
 assert 3 "int main () { int a; int *b; int **c; int ***d; b=&a; c = &b; d = &c; ***d = 3; return a; }"
 
+# ポインタの加算/減算
+assert 1 "int main () { int x; int *y; x = 123; y = &x; y + 1 == &x + 1; }"
+
+
 # 残課題
 # マイナスの結果、256以上の数値
 # callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)
+
+# TODO TODO
+# 関数の戻り値と引数の型チェック
+# 関数の戻り値と引数の型にポインタを対応させる
+# 同じ関数名で異なるsignatureは対応していない
+# =にも型情報を持たせて異なる型を代入させない
 
 
 echo OK

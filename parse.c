@@ -329,11 +329,12 @@ LVar *find_lvar(Token *tok) {
   return NULL;
 }
 
-Node *new_node(NodeKind kind, Node *lhs, Node *rhs) {
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs, Type *type) {
   Node *node = calloc(1, sizeof(Node));
   node->kind = kind;
   node->lhs = lhs;
   node->rhs = rhs;
+  node->type = type;
   return node;
 }
 
@@ -341,6 +342,10 @@ Node *new_node_num(int val) {
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_NUM;
   node->val = val;
+  
+  Type *type = calloc(1, sizeof(Type));
+  type->ty = INT;
+  node->type = type;
   return node;
 }
 
@@ -365,6 +370,7 @@ Node *function() {
   node->kind = ND_FUNC_DEF;
   node->name = token->str;
   node->len = token->len;
+  node->type = NULL;
   token = token->next;
   expect("(");
   for (;;) {
@@ -412,6 +418,7 @@ Node *function() {
     consume(",");
   }
   expect(")");
+  add_function_sig(node);
   expect("{");
   int i = 0;
   for (;;) {
@@ -548,7 +555,7 @@ Node *expr() {
 Node *assign() {
   Node *node = equality();
   if (consume("=")) {
-    node = new_node(ND_ASSIGN, node, assign());
+    node = new_node(ND_ASSIGN, node, assign(), NULL);
   }
   return node;
 }
@@ -560,10 +567,10 @@ Node *equality() {
 
   for (;;) {
     if (consume("==")) {
-      node = new_node(ND_EQUAL, node, relational());
+      node = new_node(ND_EQUAL, node, relational(), NULL);
     }
     else if (consume("!=")) {
-      node = new_node(ND_NEQUAL, node, relational());
+      node = new_node(ND_NEQUAL, node, relational(), NULL);
     }
     else
       return node;
@@ -575,13 +582,13 @@ Node *relational() {
   Node *node = add();
   for (;;) {
     if (consume(">"))
-      node = new_node(ND_GT, node, add());
+      node = new_node(ND_GT, node, add(), NULL);
     else if (consume(">="))
-      node = new_node(ND_EGT, node, add());
+      node = new_node(ND_EGT, node, add(), NULL);
     else if (consume("<"))
-      node = new_node(ND_LT, node, add());
+      node = new_node(ND_LT, node, add(), NULL);
     else if (consume("<="))
-      node = new_node(ND_ELT, node, add());  
+      node = new_node(ND_ELT, node, add(), NULL);  
     else
       return node;
   }
@@ -591,12 +598,44 @@ Node *relational() {
 Node *add() {
   Node *node = mul();
   for (;;) {
-    if (consume("+"))
-      node = new_node(ND_ADD, node, mul());
-    else if (consume("-"))
-      node = new_node(ND_SUB, node, mul());
-    else
+    if (consume("+")) {
+      // TODO 多分関数の戻り値にタイプを設定できていないから
+      Node *a_unary = mul();
+      if (node->type->ty == PTR && a_unary->type->ty == PTR) {
+        error("ポインタ型同士の加算はサポートしていません。");
+      } else if (node->type->ty == PTR && a_unary->type->ty == INT) {
+        a_unary->val = a_unary->val * 4;
+        node = new_node(ND_ADD, node, a_unary, node->type);
+      } else if (node->type->ty == INT && a_unary->type->ty == PTR) {
+        node->val = node->val * 4;
+        node = new_node(ND_ADD, node, a_unary, a_unary->type);
+      } else {
+        node = new_node(ND_ADD, node, a_unary, node->type);
+      }
+    } else if (consume("-")) {
+      Node *s_unary = mul();
+      if (node->type->ty == PTR && s_unary->type->ty == PTR) {
+        error("ポインタ型同士の減算はサポートしていません。");
+      } else if (node->type->ty == PTR && s_unary->type->ty == INT) {
+        if (node->type->ptr_to->ty == INT) {
+          s_unary->val = s_unary->val * 4;
+        } else {
+          s_unary->val = s_unary->val * 8;
+        }
+        node = new_node(ND_SUB, node, s_unary, node->type);
+      } else if (node->type->ty == INT && s_unary->type->ty == PTR) {
+        if (s_unary->type->ptr_to->ty == INT) {
+          node->val = node->val * 4;  
+        } else {
+          node->val = node->val * 8;
+        }
+        node = new_node(ND_SUB, node, s_unary, s_unary->type);
+      } else {
+        node = new_node(ND_SUB, node, s_unary, node->type);
+      }
+    } else {
       return node;
+    }
   }
 }
 
@@ -604,12 +643,21 @@ Node *add() {
 Node *mul() {
   Node *node = unary();
   for (;;) {
-    if (consume("*"))
-      node = new_node(ND_MUL, node, unary());
-    else if (consume("/"))
-      node = new_node(ND_DIV, node, unary());
-    else
+    if (consume("*")) {
+      Node *m_unary = unary();
+      if (node->type->ty != INT || m_unary->type->ty != INT) {
+        error("掛け算の両辺がINTではありません。");
+      }
+      node = new_node(ND_MUL, node, m_unary, node->type);
+    } else if (consume("/")) {
+      Node *d_unary = unary();
+      if (node->type->ty != INT || d_unary->type->ty != INT) {
+        error("割り算の両辺がINTではありません。");
+      }
+      node = new_node(ND_DIV, node, d_unary, node->type);
+    } else {
       return node;
+    }
   }
 }
 
@@ -623,17 +671,32 @@ Node *unary() {
     return primary();
   }
   if (consume("-")) {
-    return new_node(ND_SUB, new_node_num(0), primary());
+    Node *node = primary();
+    return new_node(ND_SUB, new_node_num(0), node, node->type);
   }
 
   if (is_("*")) {
     token = token->next;
-    return new_node(ND_DEREF, unary(), NULL);
+    Node *deref_node = unary();
+    if (deref_node->type->ty != PTR) {
+      error("*演算子はポインタ型に前のみ記述可能です。");
+    }
+    Type *new = deref_node->type->ptr_to;
+    return new_node(ND_DEREF, deref_node, NULL, new);
   }
 
   if (is_("&")) {
     token = token->next;
-    return new_node(ND_ADDR, unary(), NULL);
+    Node *addr_node = unary();
+    if (addr_node->kind != ND_LVAR) {
+      error("&演算子は変数の前のみ記述可能です");
+    }
+
+    Type *type = calloc(1, sizeof(Type));
+    type->ty = PTR;
+    type->ptr_to = addr_node->type;
+
+    return new_node(ND_ADDR, addr_node, NULL, type);
   }
 
   return primary();
@@ -669,6 +732,7 @@ Node *primary() {
         consume(",");
       }
       consume(")");
+      node->type = get_function_sig(node);
       return node;
     }
     node->kind = ND_LVAR;
@@ -677,6 +741,7 @@ Node *primary() {
     if (lvar) {
       node->offset = lvar->offset;
       node->locals = lvar;
+      node->type = lvar->type;
     } else {
       error("未定義の変数を利用しています。");
     }
