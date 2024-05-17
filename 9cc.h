@@ -1,5 +1,7 @@
 #ifndef NINECC_H
 #define NINECC_H
+#include <stddef.h>
+
 
 // トークンの種類
 typedef enum {
@@ -55,9 +57,11 @@ typedef enum {
   ND_LVAR_DEF,   // int         // 22
 } NodeKind;
 
+
 struct Type {
-  enum {INT, PTR} ty;
+  enum {INT, PTR, ARRAY} ty;
   struct Type *ptr_to;
+  size_t array_size;
 };
 
 typedef struct Node Node;

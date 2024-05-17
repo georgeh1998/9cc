@@ -151,6 +151,10 @@ assert 4 "int main() { sizeof(2*2+3); }"
 assert 4 "int main() { int a; sizeof a; }"
 assert 8 "int main() { int *b; sizeof b; }"
 
+# 配列定義
+assert 4 "int main() { int a; int *b; int c[15]; int *d[15]; 4; }"
+assert 4 "int main() { int *******d[15]; 4; }"
+
 # 残課題
 # マイナスの結果、256以上の数値
 # callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)
