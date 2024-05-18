@@ -422,7 +422,7 @@ Node *function() {
     }
     LVar *lvar = generate_lvar(1);
     if (lvar) {
-      lvar = add_local_variable(lvar);
+      add_local_variable(lvar);
     } else {
       error("有効な変数ではありません。");
     }
@@ -517,7 +517,7 @@ Node *stmt() {
     if (lvar == NULL) {
       error("有効な変数ではありません。");
     } else {
-      lvar = add_local_variable(lvar);
+      add_local_variable(lvar);
       Node *node_lvar_def = calloc(1, sizeof(Node));
       node_lvar_def->kind = ND_LVAR_DEF;
       node_lvar_def->offset = lvar->offset;
@@ -585,7 +585,6 @@ Node *add() {
   Node *node = mul();
   for (;;) {
     if (consume("+")) {
-      // TODO 多分関数の戻り値にタイプを設定できていないから
       Node *a_unary = mul();
       if (node->type->ty == PTR && a_unary->type->ty == PTR) {
         error("ポインタ型同士の加算はサポートしていません。");

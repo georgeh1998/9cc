@@ -43,7 +43,7 @@ void gen_function_def(Node *node) {
   printf("  mov rbp, rsp\n");
   int local_var_stack = 0;
   for (LVar *var = node->locals; var; var = var->next) {
-    local_var_stack = var->offset;
+    local_var_stack += var->offset;
   }
   printf("  sub rsp, %d\n", local_var_stack);
 

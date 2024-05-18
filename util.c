@@ -51,12 +51,12 @@ int get_size_of(Type *type) {
     }
 }
 
-LVar *add_local_variable(LVar *lvar) {
+void add_local_variable(LVar *lvar) {
     if (current_func_token->locals) {
         for (LVar *var = current_func_token->locals; var; var = var->next) {
             if (var->next == NULL) {
+                lvar->offset = var->offset + get_size_of(lvar->type);
                 var->next = lvar;
-                lvar->offset = get_size_of(lvar->type);
                 break;
             }
         }
