@@ -154,6 +154,8 @@ assert 8 "int main() { int *b; sizeof b; }"
 # 配列定義
 assert 4 "int main() { int a; int *b; int c[15]; int *d[15]; 4; }"
 assert 4 "int main() { int *******d[15]; 4; }"
+assert 40 "int main() { int a[10]; sizeof a;}"
+assert 80 "int main() { int *a[10]; sizeof a;}"
 
 # 残課題
 # マイナスの結果、256以上の数値

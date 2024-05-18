@@ -39,3 +39,29 @@ Type *get_function_sig(Node *node) {
     }
     error("関数が定義されていません。");
 }
+
+int get_size_of(Type *type) {
+    if (type->ty == INT) {
+        return 4;
+    } else if (type->ty == ARRAY) {
+        int each_size = get_size_of(type->ptr_to);
+        return each_size * type->array_size;
+    } else {
+        return 8;
+    }
+}
+
+LVar *add_local_variable(LVar *lvar) {
+    if (current_func_token->locals) {
+        for (LVar *var = current_func_token->locals; var; var = var->next) {
+            if (var->next == NULL) {
+                var->next = lvar;
+                lvar->offset = get_size_of(lvar->type);
+                break;
+            }
+        }
+    } else {
+        lvar->offset = get_size_of(lvar->type);
+        current_func_token->locals = lvar;
+    }
+}

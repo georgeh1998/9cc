@@ -166,7 +166,8 @@ extern LabelStack *labelStackFor;
 // util
 void add_function_sig(Node *node);
 Type *get_function_sig(Node *node);
-
+int get_size_of(Type *type);
+LVar *add_local_variable(LVar *lvar);
 
 // Debug用関数
 void printTokens(Token token);

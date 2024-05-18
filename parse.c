@@ -89,7 +89,7 @@ LVar *find_lvar(Token *tok) {
 
 Type *connect_deref(Type *type, int new_type, int array_size) {
   Type *new = calloc(1, sizeof(Type));
-  if (new_type = PTR) {
+  if (new_type == PTR) {
     new->ty = PTR;
   } else if (new_type == ARRAY) {
     new->ty = ARRAY;
@@ -422,26 +422,7 @@ Node *function() {
     }
     LVar *lvar = generate_lvar(1);
     if (lvar) {
-      if (current_func_token->locals) {
-        for (LVar *var = current_func_token->locals; var; var = var->next) {
-          if (var->next == NULL) {
-            var->next = lvar;
-            if (lvar->type->ty == INT) {
-              lvar->offset = var->offset + 4;
-            } else {
-              lvar->offset = var->offset + 8;  
-            }
-            break;
-          }
-        }
-      } else {
-        if (lvar->type->ty == INT) {
-          lvar->offset = 4;
-        } else {
-          lvar->offset = 8;  
-        }
-        current_func_token->locals = lvar;
-      }
+      lvar = add_local_variable(lvar);
     } else {
       error("有効な変数ではありません。");
     }
@@ -536,26 +517,7 @@ Node *stmt() {
     if (lvar == NULL) {
       error("有効な変数ではありません。");
     } else {
-      if (current_func_token->locals) {
-        for (LVar *var = current_func_token->locals; var; var = var->next) {
-          if (var->next == NULL) {
-            var->next = lvar;
-            if (lvar->type->ty == INT) {
-              lvar->offset = var->offset + 4;
-            } else {
-              lvar->offset = var->offset + 8;  
-            }
-            break;
-          }
-        }
-      } else {
-        if (lvar->type->ty == INT) {
-          lvar->offset = 4;
-        } else {
-          lvar->offset = 8;  
-        }
-        current_func_token->locals = lvar;
-      }
+      lvar = add_local_variable(lvar);
       Node *node_lvar_def = calloc(1, sizeof(Node));
       node_lvar_def->kind = ND_LVAR_DEF;
       node_lvar_def->offset = lvar->offset;
@@ -726,12 +688,7 @@ Node *unary() {
 
   if (consume_sizeof()) {
     Node *sizeof_unary = unary();
-    int size;
-    if (sizeof_unary->type->ty == INT) {
-      size = 4;
-    } else {
-      size = 8;
-    }
+    int size = get_size_of(sizeof_unary->type);
     return new_node_num(size);
   }
 
