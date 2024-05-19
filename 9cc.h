@@ -162,12 +162,19 @@ extern LabelStack *labelStackIf;
 extern LabelStack *labelStackWhile;
 extern LabelStack *labelStackFor;
 
+// parse.c
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs, Type *type);
 
 // util
 void add_function_sig(Node *node);
 Type *get_function_sig(Node *node);
 int get_size_of(Type *type);
 void add_local_variable(LVar *lvar);
+Type *find_assign_type(Type *l, Type *r);
+
+// operator
+Node *operate_add(Node *l, Node *r);
+Node *operate_sub(Node *l, Node *r);
 
 // Debug用関数
 void printTokens(Token token);

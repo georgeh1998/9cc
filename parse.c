@@ -541,7 +541,9 @@ Node *expr() {
 Node *assign() {
   Node *node = equality();
   if (consume("=")) {
-    node = new_node(ND_ASSIGN, node, assign(), NULL);
+    Node *a_node = assign();
+    Type *type = find_assign_type(node->type, a_node->type);
+    node = new_node(ND_ASSIGN, node, a_node, type);
   }
   return node;
 }
@@ -580,44 +582,17 @@ Node *relational() {
   }
 }
 
+// TODO 配列の足し算に対応する
 // add = mul ("+" mul | "-" mul)*
 Node *add() {
   Node *node = mul();
   for (;;) {
     if (consume("+")) {
       Node *a_unary = mul();
-      if (node->type->ty == PTR && a_unary->type->ty == PTR) {
-        error("ポインタ型同士の加算はサポートしていません。");
-      } else if (node->type->ty == PTR && a_unary->type->ty == INT) {
-        a_unary->val = a_unary->val * 4;
-        node = new_node(ND_ADD, node, a_unary, node->type);
-      } else if (node->type->ty == INT && a_unary->type->ty == PTR) {
-        node->val = node->val * 4;
-        node = new_node(ND_ADD, node, a_unary, a_unary->type);
-      } else {
-        node = new_node(ND_ADD, node, a_unary, node->type);
-      }
+      node = operate_add(node, a_unary);
     } else if (consume("-")) {
       Node *s_unary = mul();
-      if (node->type->ty == PTR && s_unary->type->ty == PTR) {
-        error("ポインタ型同士の減算はサポートしていません。");
-      } else if (node->type->ty == PTR && s_unary->type->ty == INT) {
-        if (node->type->ptr_to->ty == INT) {
-          s_unary->val = s_unary->val * 4;
-        } else {
-          s_unary->val = s_unary->val * 8;
-        }
-        node = new_node(ND_SUB, node, s_unary, node->type);
-      } else if (node->type->ty == INT && s_unary->type->ty == PTR) {
-        if (s_unary->type->ptr_to->ty == INT) {
-          node->val = node->val * 4;  
-        } else {
-          node->val = node->val * 8;
-        }
-        node = new_node(ND_SUB, node, s_unary, s_unary->type);
-      } else {
-        node = new_node(ND_SUB, node, s_unary, node->type);
-      }
+      node = operate_sub(node, s_unary);
     } else {
       return node;
     }
@@ -664,10 +639,12 @@ Node *unary() {
   if (is_("*")) {
     token = token->next;
     Node *deref_node = unary();
-    if (deref_node->type->ty != PTR) {
-      error("*演算子はポインタ型に前のみ記述可能です。");
+    Type *new;
+    if (deref_node->type->ty != PTR && deref_node->type->ty != ARRAY) {
+      error("*演算子が対応していない型です。");
+    } else {
+      new = deref_node->type->ptr_to;
     }
-    Type *new = deref_node->type->ptr_to;
     return new_node(ND_DEREF, deref_node, NULL, new);
   }
 

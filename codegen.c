@@ -43,7 +43,8 @@ void gen_function_def(Node *node) {
   printf("  mov rbp, rsp\n");
   int local_var_stack = 0;
   for (LVar *var = node->locals; var; var = var->next) {
-    local_var_stack += var->offset;
+    // 最後のoffsetだけでOK (+=ではなくて良い)
+    local_var_stack = var->offset;
   }
   printf("  sub rsp, %d\n", local_var_stack);
 
@@ -120,8 +121,11 @@ void gen(Node *node) {
     case ND_LVAR:
       gen_lval(node);
       printf("  pop rax\n");
-      if (node->locals->type->ty == INT) {
+      if (node->type->ty == INT) {
         printf("  mov eax, [rax]\n");
+      } else if (node->type->ty == ARRAY) {
+        printf("  push rax\n");
+        return;
       } else {
         printf("  mov rax, [rax]\n");
       }
@@ -133,7 +137,7 @@ void gen(Node *node) {
 
       printf("  pop rdi\n");
       printf("  pop rax\n");
-      
+
       if (find_type(node->lhs)->ty == INT) {
         printf("  mov [rax], edi\n");
       } else {

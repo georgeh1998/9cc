@@ -134,14 +134,15 @@ assert 21 "int foo(int a, int b, int c, int d, int e, int f) { return a + b + c 
 
 # ポインタ、アドレス
 assert 3 "int main () { int x; int *y; x = 3; y = &x; return *y; }"
-assert 5 "int main () { int x; int y; int *z; x = 5; y = 5; z = &y + 1; return *z; }"
 assert 10 "int main () { int x; int *y; y=&x; *y = 10; return x; }"
 assert 57 "int main () { int x; int *y; y=&x; *y = 57; return x; }"
 assert 167 "int main () { int x; int *y; int **z; y=&x; z = &y;  **z = 167; return x; }"
 assert 3 "int main () { int a; int *b; int **c; int ***d; b=&a; c = &b; d = &c; ***d = 3; return a; }"
 
 # ポインタの加算/減算
-assert 1 "int main () { int x; int *y; x = 123; y = &x; y + 1 == &x + 1; }"
+assert 5 "int main () { int x; int y; int *z; x = 5; z = &y + 1; return *z; }"
+assert 1 "int main () { int x; int *y; y = &x; y + 1 == &x + 1; }"
+assert 1 "int main () { int *x; int *y; &x == &y + 1;  }"
 
 
 # sizeof
@@ -156,6 +157,11 @@ assert 4 "int main() { int a; int *b; int c[15]; int *d[15]; 4; }"
 assert 4 "int main() { int *******d[15]; 4; }"
 assert 40 "int main() { int a[10]; sizeof a;}"
 assert 80 "int main() { int *a[10]; sizeof a;}"
+
+# 配列の代入
+assert 3 "int main () { int x[2]; *x = 1; *(x+1) = 2; int *p; p = x; return *p + *(p+1); }"
+
+# 配列の
 
 # 残課題
 # マイナスの結果、256以上の数値

@@ -65,3 +65,26 @@ void add_local_variable(LVar *lvar) {
         current_func_token->locals = lvar;
     }
 }
+
+
+Type *find_assign_type(Type *l, Type *r) {
+    if (l->ty == INT) {
+        if (r->ty == INT) {
+            return l;
+        } else {
+            error("代入に対応していません: 1");
+        }
+    }
+
+    if (l->ty == PTR) {
+        if (r->ty == PTR) {
+            return l;
+        } else if (r->ty == ARRAY) {
+            return l;
+        } else {
+            error("代入に対応していません: 2");
+        }
+    }
+
+    error("代入に対応していません: 3");
+}
