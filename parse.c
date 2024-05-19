@@ -144,7 +144,7 @@ LVar *generate_lvar(int arg_type) {
   return return_lvar;
 }
 
-bool is_func(char *value) {
+bool next_is(char *value) {
   if (token->next->kind != TK_RESERVED ||
       strlen(value) != token->next->len ||
       memcmp(token->next->str, value, token->next->len))
@@ -684,7 +684,7 @@ Node *primary() {
   Token *tok = consume_ident();
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
-    if(is_func("(")) {
+    if(next_is("(")) {
       // function call
       node->kind = ND_FUNC_CALL;
       node->name = tok->str;
@@ -704,7 +704,6 @@ Node *primary() {
       node->type = get_function_sig(node);
       return node;
     }
-    node->kind = ND_LVAR;
 
     LVar *lvar = find_lvar(tok);
     if (lvar) {
@@ -714,8 +713,19 @@ Node *primary() {
     } else {
       error("未定義の変数を利用しています。");
     }
-
+    node->kind = ND_LVAR;
     token = token->next;
+
+    if (is_("[")) {
+      expect("[");
+      // TODO [unary()]もOKなはず
+      int num = expect_number(); 
+      expect("]");
+      int add_size = num * get_add_size(lvar->type);
+      Type *type = lvar->type->ptr_to;
+      Node *index_node = new_node(ND_ADD, node, new_node_num(add_size), type);
+      return new_node(ND_DEREF, index_node, NULL, type);
+    }
     return node;
   }
   return new_node_num(expect_number());

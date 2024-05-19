@@ -108,7 +108,7 @@ assert 10 "int main () { int a; int x; a = 3; x = 5; if (a < 10) { a = a + 1; x 
 assert 32 "int main () { int a; int x; a = 0; x = 2; while (a < 4) { a = a + 1; x = x * 2; } x; }"
 
 
-# function call
+# function call (c_func.c)
 # assert 0 "int main () { foo0(); }"
 # assert 1 "int main () { foo1(1); }"
 # assert 3 "int main () { foo2(1, 2); }"
@@ -161,7 +161,12 @@ assert 80 "int main() { int *a[10]; sizeof a;}"
 # 配列の代入
 assert 3 "int main () { int x[2]; *x = 1; *(x+1) = 2; int *p; p = x; return *p + *(p+1); }"
 
-# 配列の
+# 配列の添字
+assert 12 "int main() { int x[1]; *x = 12; x[0]; }"
+assert 13 "int main() { int x[3]; *(x+2) = 13; x[2]; }"
+assert 14 "int main() { int x[2]; x[1] = 14; *(x+1); }"
+assert 15 "int main() { int x[4]; x[3] = 15; *(x+3); }"
+
 
 # 残課題
 # マイナスの結果、256以上の数値

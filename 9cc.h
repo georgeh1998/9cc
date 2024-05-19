@@ -173,6 +173,7 @@ void add_local_variable(LVar *lvar);
 Type *find_assign_type(Type *l, Type *r);
 
 // operator
+int get_add_size(Type *t);
 Node *operate_add(Node *l, Node *r);
 Node *operate_sub(Node *l, Node *r);
 
