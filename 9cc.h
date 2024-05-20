@@ -164,6 +164,7 @@ extern LabelStack *labelStackFor;
 
 // parse.c
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs, Type *type);
+Node *new_node_num(int val);
 
 // util
 void add_function_sig(Node *node);

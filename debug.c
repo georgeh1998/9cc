@@ -54,3 +54,46 @@ void printTokens(Token t) {
 
     printf("\n");
 }
+
+
+// ASTを出力する関数
+void print_ast(Node *node, int depth) {
+    if (node == NULL) return;
+
+    // 右の子ノードを先に出力
+    print_ast(node->rhs, depth + 1);
+
+    // 現在のノードを出力
+    for (int i = 0; i < depth; i++) {
+        printf("    ");
+    }
+
+    switch (node->kind) {
+    case ND_LVAR:
+        printf("%.*s\n", node->len, node->name);
+        break;
+    case ND_ASSIGN:
+        printf("=(%d)\n", node->type->ty);
+        break;
+    case ND_DEREF:
+        printf("*(%d)\n", node->type->ty);
+        break;
+    case ND_ADD:
+        printf("+(%d)\n", node->type->ty);
+        break;
+    case ND_SUB:
+        printf("-\n");
+        break;
+    case ND_MUL:
+        printf("*\n");
+        break;
+    case ND_NUM:
+        printf("%d\n", node->val);
+        break;
+    default:
+        printf("Unknown NodeKind: %d\n", node->kind);
+    }
+
+    // 左の子ノードを出力
+    print_ast(node->lhs, depth + 1);
+}
