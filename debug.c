@@ -85,7 +85,7 @@ void print_ast(Node *node, int depth) {
         printf("-\n");
         break;
     case ND_MUL:
-        printf("*\n");
+        printf("*(%d)\n", node->type->ty);
         break;
     case ND_NUM:
         printf("%d\n", node->val);

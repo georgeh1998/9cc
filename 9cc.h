@@ -181,5 +181,6 @@ Node *operate_sub(Node *l, Node *r);
 // Debug用関数
 void printTokens(Token token);
 void printToken(Token token);
+void print_ast(Node *node, int depth);
 
 #endif

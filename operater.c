@@ -32,17 +32,20 @@ int get_add_size(Type *t) {
     error("unknown error at get_add_size");
 }
 
-
+/**
+ * int x[]; x + 1;
+ * int a; int x[]; *(x+a);
+*/
 Node *operate_add(Node *l, Node *r) {
     Type *lt = l->type;
     Type *rt = r->type;
 
     if (lt->ty == INT) {
-        l->val = l->val * get_add_size(rt);
-        return new_node(ND_ADD, l, r, rt);
+        Node *m_node = new_node(ND_MUL, new_node_num(get_add_size(rt)), l, lt);
+        return new_node(ND_ADD, r, m_node, rt);
     } else if (rt->ty == INT) {
-        r->val = r->val * get_add_size(lt);
-        return new_node(ND_ADD, l, r, lt);
+        Node *m_node = new_node(ND_MUL, new_node_num(get_add_size(lt)), r, rt);
+        return new_node(ND_ADD, l, m_node, lt);
     } else {
         error("加算の両オペランドが想定していない型です。");
     }

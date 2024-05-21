@@ -640,10 +640,12 @@ Node *unary() {
     token = token->next;
     Node *deref_node = unary();
     Type *new;
-    if (deref_node->type->ty != PTR && deref_node->type->ty != ARRAY) {
-      error("*演算子が対応していない型です。");
-    } else {
+    if (deref_node->type->ty == PTR) {
       new = deref_node->type->ptr_to;
+    } else if (deref_node->type->ty == ARRAY) {
+      new = deref_node->type->ptr_to;
+    } else {
+      error("*演算子が対応していない型です。");
     }
     return new_node(ND_DEREF, deref_node, NULL, new);
   }
@@ -709,6 +711,8 @@ Node *primary() {
     if (lvar) {
       node->offset = lvar->offset;
       node->locals = lvar;
+      node->name = lvar->name;
+      node->len = lvar->len;
       node->type = lvar->type;
     } else {
       error("未定義の変数を利用しています。");
@@ -718,13 +722,10 @@ Node *primary() {
 
     if (is_("[")) {
       expect("[");
-      // TODO [unary()]もOKなはず
-      int num = expect_number(); 
+      Node *index_node = equality();
       expect("]");
-      int add_size = num * get_add_size(lvar->type);
-      Type *type = lvar->type->ptr_to;
-      Node *index_node = new_node(ND_ADD, node, new_node_num(add_size), type);
-      return new_node(ND_DEREF, index_node, NULL, type);
+      Node *add_node = operate_add(node, index_node);
+      return new_node(ND_DEREF, add_node, NULL, add_node->type->ptr_to);
     }
     return node;
   }
