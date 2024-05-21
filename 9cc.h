@@ -143,6 +143,8 @@ Node *primary();
 
 
 void gen_top_level_def(Node *node);
+void gen(Node *node);
+void gen_data();
 
 
 LabelStack *create_label_stack();
@@ -164,6 +166,8 @@ extern FunctionSig *function_sig;
 
 // 現在見ている関数のToken
 extern Node *current_func_token;
+
+extern GVar *gvar;
 
 
 // Label記憶用のStack

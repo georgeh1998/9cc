@@ -40,12 +40,17 @@ int main(int argc, char **argv) {
 
   // アセンブリの前半部分を出力
   printf(".intel_syntax noprefix\n");
-  printf(".globl main\n");
+  printf(".data\n");
+
+  gen_data();
 
   labelStackIf = create_label_stack();
   labelStackWhile = create_label_stack();
   labelStackFor = create_label_stack();
   
+
+  printf(".globl main\n");
+  printf(".text\n");
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {
     gen_top_level_def(code[i]);
