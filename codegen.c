@@ -29,7 +29,12 @@ void gen_lval(Node *node) {
   printf("  push rax\n");
 }
 
-void gen_function_def(Node *node) {
+void gen_top_level_def(Node *node) {
+
+  if (node->kind == ND_GVAR_DEF) {
+    return;
+  }
+
   // 関数ラベルを出力
   char label[node->len];
   for (int i = 0; i < node->len; i++) {
@@ -254,6 +259,8 @@ void gen(Node *node) {
       printf("  push rax\n");
       return;
     case ND_LVAR_DEF:
+      return;
+    case ND_GVAR_DEF:
       return;
   }
 

@@ -1,6 +1,7 @@
 #ifndef NINECC_H
 #define NINECC_H
 #include <stddef.h>
+#include <stdbool.h>
 
 
 // トークンの種類
@@ -55,6 +56,7 @@ typedef enum {
   ND_ADDR, // &          // 20
   ND_DEREF,   // *          // 21
   ND_LVAR_DEF,   // int         // 22
+  ND_GVAR_DEF, // int          // 23
 } NodeKind;
 
 
@@ -69,6 +71,16 @@ typedef struct Node Node;
 typedef struct LVar LVar;
 
 typedef struct Type Type;
+
+typedef struct GVar GVar;
+
+// グローバル変数
+struct GVar {
+  GVar *next;
+  char *name;
+  int len;
+  Type *type;
+};
 
 // ローカル変数の型
 struct LVar {
@@ -130,8 +142,7 @@ Node *unary();
 Node *primary();
 
 
-void gen(Node *node);
-void gen_function_def(Node *node);
+void gen_top_level_def(Node *node);
 
 
 LabelStack *create_label_stack();
@@ -154,8 +165,6 @@ extern FunctionSig *function_sig;
 // 現在見ている関数のToken
 extern Node *current_func_token;
 
-// ローカル変数
-extern LVar *locals;
 
 // Label記憶用のStack
 extern LabelStack *labelStackIf;
@@ -163,8 +172,16 @@ extern LabelStack *labelStackWhile;
 extern LabelStack *labelStackFor;
 
 // parse.c
+void expect(char *op);
+int expect_number();
+bool consume(char *op);
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs, Type *type);
 Node *new_node_num(int val);
+Type *connect_deref(Type *type, int new_type, int array_size);
+bool is_(char *value);
+bool is_block_end();
+bool is_type(char *type);
+LVar *generate_lvar(int arg_type);
 
 // util
 void add_function_sig(Node *node);
@@ -173,10 +190,18 @@ int get_size_of(Type *type);
 void add_local_variable(LVar *lvar);
 Type *find_assign_type(Type *l, Type *r);
 
+
 // operator
 int get_add_size(Type *t);
 Node *operate_add(Node *l, Node *r);
 Node *operate_sub(Node *l, Node *r);
+
+// global.c
+Node *generate_gvar_node();
+
+// function.c
+Node *generate_function_def_node();
+
 
 // Debug用関数
 void printTokens(Token token);

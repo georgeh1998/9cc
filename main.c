@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
   
   // 抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; i++) {
-    gen_function_def(code[i]);
+    gen_top_level_def(code[i]);
   }
   return 0;
 }
