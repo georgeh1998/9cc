@@ -42,15 +42,8 @@ void gen_top_level_def(Node *node) {
     return;
   }
 
-  // 関数ラベルを出力
-  char label[node->len];
-  for (int i = 0; i < node->len; i++) {
-    label[i] = node->name[i];
-  }
-  label[node->len] = '\0';
-
   // 関数プロローグ&変数のメモリ確保
-  printf("%s:\n", label);
+  printf("%.*s:\n", node->len, node->name);
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
   int local_var_stack = 0;
@@ -266,9 +259,7 @@ void gen(Node *node) {
           break;
         }
       }
-      strncpy(result, node->name, node->len);
-      result[node->len] = '\0';
-      printf("  call %s\n", result);
+      printf("  call %.*s\n", node->len, node->name);
       printf("  push rax\n");
       return;
     case ND_ADDR:
