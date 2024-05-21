@@ -33,30 +33,31 @@ struct Token {
 
 // 抽象構文木のノードの種類
 typedef enum {
-  ND_ADD,    // +            // 0
-  ND_SUB,    // -            // 1
-  ND_MUL,    // *            // 2
-  ND_DIV,    // /            // 3
-  ND_ASSIGN, // =            // 4
-  ND_LVAR,   // ローカル変数   // 5
-  ND_FUNC_CALL,   // 関数呼び出し　　　　   // 6
-  ND_FUNC_DEF,    // 関数定義 // 7
-  ND_EQUAL,  // ==           // 8
-  ND_NEQUAL, // !=           // 9
-  ND_GT,     // >            // 10
-  ND_EGT,    // =>           // 11
-  ND_LT,     // <            // 12
-  ND_ELT,    // =<           // 13
-  ND_RETURN, // return       // 14
-  ND_IF,     // if           // 15
-  ND_WHILE,  // while        // 16
-  ND_FOR,    // for          // 17
-  ND_BLOCK,  // block        // 18
-  ND_NUM,    // 整数          // 19
-  ND_ADDR, // &          // 20
-  ND_DEREF,   // *          // 21
-  ND_LVAR_DEF,   // int         // 22
-  ND_GVAR_DEF, // int          // 23
+  ND_ADD,       // +            // 0
+  ND_SUB,       // -            // 1
+  ND_MUL,       // *            // 2
+  ND_DIV,       // /            // 3
+  ND_ASSIGN,    // =            // 4
+  ND_LVAR,      // local var    // 5
+  ND_GVAR,      // glbal var    // 6
+  ND_FUNC_CALL, // func call　 　// 7
+  ND_FUNC_DEF,  // func def     // 8
+  ND_EQUAL,     // ==           // 9
+  ND_NEQUAL,    // !=           // 10
+  ND_GT,        // >            // 11
+  ND_EGT,       // =>           // 12
+  ND_LT,        // <            // 13
+  ND_ELT,       // =<           // 14
+  ND_RETURN,    // return       // 15
+  ND_IF,        // if           // 16
+  ND_WHILE,     // while        // 17
+  ND_FOR,       // for          // 18
+  ND_BLOCK,     // block        // 19
+  ND_NUM,       // 整数          // 20
+  ND_ADDR,      // &            // 21
+  ND_DEREF,     // *            // 22
+  ND_LVAR_DEF,  // int          // 23
+  ND_GVAR_DEF,  // int          // 24
 } NodeKind;
 
 
@@ -201,6 +202,7 @@ Node *operate_add(Node *l, Node *r);
 Node *operate_sub(Node *l, Node *r);
 
 // global.c
+GVar *find_gvar(Token *tok);
 Node *generate_gvar_node();
 
 // function.c

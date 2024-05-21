@@ -593,7 +593,7 @@ Node *unary() {
   if (is_("&")) {
     token = token->next;
     Node *addr_node = unary();
-    if (addr_node->kind != ND_LVAR) {
+    if (addr_node->kind != ND_LVAR && addr_node->kind != ND_GVAR) {
       error("&演算子は変数の前のみ記述可能です");
     }
 
@@ -649,15 +649,23 @@ Node *primary() {
 
     LVar *lvar = find_lvar(tok);
     if (lvar) {
+      node->kind = ND_LVAR;
       node->offset = lvar->offset;
       node->locals = lvar;
       node->name = lvar->name;
       node->len = lvar->len;
       node->type = lvar->type;
     } else {
-      error("未定義の変数を利用しています。");
+      GVar *gvar = find_gvar(tok);
+      if (gvar) {
+        node->kind = ND_GVAR;
+        node->name = gvar->name;
+        node->len = gvar->len;
+        node->type = gvar->type;
+      } else {
+        error("未定義の変数を利用しています。");  
+      }
     }
-    node->kind = ND_LVAR;
     token = token->next;
 
     if (is_("[")) {

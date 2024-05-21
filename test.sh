@@ -162,11 +162,17 @@ assert 80 "int main() { int *a[10]; sizeof a;}"
 assert 3 "int main () { int x[2]; *x = 1; *(x+1) = 2; int *p; p = x; return *p + *(p+1); }"
 
 # 配列の添字 (変数を使用するとうまく動かない)
-# assert 12 "int main() { int x[1]; *x = 12; x[0]; }"
-# assert 13 "int main() { int x[3]; *(x+2) = 13; x[2]; }"
-# assert 14 "int main() { int x[2]; x[1] = 14; *(x+1); }"
-# assert 15 "int main() { int x[4]; x[3] = 15; *(x+3); }"
+assert 12 "int main() { int x[1]; *x = 12; x[0]; }"
+assert 13 "int main() { int x[3]; *(x+2) = 13; x[2]; }"
+assert 14 "int main() { int x[2]; x[1] = 14; *(x+1); }"
+assert 15 "int main() { int x[4]; x[3] = 15; *(x+3); }"
 
+# グローバル変数
+assert 130 "int a; int main () { a = 130; a; }"
+assert 131 "int a; int foo() { a = 100; return a; } int main () { a = 10; return foo() + 31; }"
+assert 132 "int *a; int b; int main() { b = 132; a = &b; *a; }"
+assert 133 "int a[2]; int main() { int b; b = 0;  a[0] = 133; a[1] = 194; a[b]; }"
+assert 134 "int a[2]; int main() { a[0] = 123; a[1] = 134; a[1]; }"
 
 # 残課題
 # マイナスの結果、256以上の数値

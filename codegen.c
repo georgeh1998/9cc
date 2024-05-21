@@ -6,28 +6,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-Type *find_type(Node *node) {
-  
-  for (Node *n = node; n; n = n->lhs) {
-    if (n->kind == ND_LVAR) {
-      return n->locals->type;
-    }
-  }
-}
-
-void gen_lval(Node *node) {
-  if (node->kind == ND_DEREF) {
-    gen(node->lhs);
-    return;
-  }
-
-  if (node->kind != ND_LVAR)
+void gen_lvar(Node *node) {
+  if (node->kind != ND_LVAR) {
     error("代入の左辺値が変数ではありません");
-  
+  }
   printf("  mov rax, rbp\n");
   printf("  sub rax, %d\n", node->offset);
   printf("  push rax\n");
 }
+
+void gen_gvar(Node *node) {
+  if (node->kind != ND_GVAR) {
+    error("代入の左辺値が変数ではありません");
+  }
+  printf("  lea rax, [rip + %.*s]\n", node->len, node->name);
+  printf("  push rax\n");
+}
+
+void gen_var(Node *node) {
+  if (node->kind == ND_DEREF) {
+    gen(node->lhs);
+    return;
+  }
+  if (node->kind == ND_LVAR) {
+    gen_lvar(node);
+  } else if (node->kind == ND_GVAR) {
+    gen_gvar(node);
+  }
+}
+
 
 void gen_top_level_def(Node *node) {
 
@@ -124,7 +131,20 @@ void gen(Node *node) {
       printf("  push %d\n", node->val);
       return;
     case ND_LVAR:
-      gen_lval(node);
+      gen_var(node);
+      printf("  pop rax\n");
+      if (node->type->ty == INT) {
+        printf("  mov eax, [rax]\n");
+      } else if (node->type->ty == ARRAY) {
+        printf("  push rax\n");
+        return;
+      } else {
+        printf("  mov rax, [rax]\n");
+      }
+      printf("  push rax\n");
+      return;
+    case ND_GVAR:
+      gen_var(node);
       printf("  pop rax\n");
       if (node->type->ty == INT) {
         printf("  mov eax, [rax]\n");
@@ -137,16 +157,18 @@ void gen(Node *node) {
       printf("  push rax\n");
       return;
     case ND_ASSIGN:
-      gen_lval(node->lhs);
+      gen_var(node->lhs);
       gen(node->rhs);
 
       printf("  pop rdi\n");
       printf("  pop rax\n");
 
-      if (find_type(node->lhs)->ty == INT) {
+      if (node->type->ty == INT) {
         printf("  mov [rax], edi\n");
-      } else {
+      } else if (node->type->ty == PTR) {
         printf("  mov [rax], rdi\n");
+      } else {
+        error("代入に対応していません。");
       }
       printf("  push rdi\n");
       return;
@@ -250,7 +272,7 @@ void gen(Node *node) {
       printf("  push rax\n");
       return;
     case ND_ADDR:
-      gen_lval(node->lhs);
+      gen_var(node->lhs);
       return;
     case ND_DEREF:
       gen(node->lhs);
