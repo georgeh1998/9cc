@@ -152,32 +152,6 @@ bool next_is(char *value) {
   return true;  
 }
 
-bool is_func_def() {
-  Token *t = token;
-  if (t->kind != TK_IDENT) return false;
-  t = t->next;
-  if (t->kind != TK_RESERVED ||
-      strlen("(") != t->len ||
-      memcmp(t->str, "(", t->len))
-    return false;
-  t = t->next;
-
-  while (true) {
-    if (!(t->kind != TK_RESERVED ||
-        strlen(")") != t->len ||
-        memcmp(t->str, ")", t->len))) {
-      break;
-    }
-    t = t->next;
-  }
-  if (t->next->kind != TK_RESERVED ||
-      strlen("{") != t->next->len ||
-      memcmp(t->next->str, "{", t->next->len))
-    return false;
-  return true;
-}
-
-
 bool consume_return() {
     if (token->kind != TK_RETURN ||
       strlen("return") != token->len ||
