@@ -39,9 +39,8 @@ void add_global_variable(GVar *add_g) {
 // int *x;
 // int *x[];
 // int x[];
-Node *generate_gvar_node() {
-  Type *type = calloc(1, sizeof(Type));
-  type->ty = INT;
+Node *generate_gvar_node(Type *type) {
+  
   for (;;) {
     if (is_("*")) {
       type = connect_deref(type, PTR, 0);

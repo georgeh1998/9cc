@@ -337,12 +337,16 @@ void gen_data() {
   for (GVar *var = gvar; var; var = var->next) {
     printf("%.*s:\n", var->len, var->name);
     int size;
-    if (var->type->ty == INT) {
+    if (var->type->ty == CHAR) {
+      size = 1;
+    } else if (var->type->ty == INT) {
       size = 4;
     } else if (var->type->ty == PTR) {
       size = 8;
     } else if (var->type->ty == ARRAY) {
-      if (var->type->ptr_to->ty == INT) {
+      if (var->type->ptr_to->ty == CHAR) {
+        size = 1 * var->type->array_size;
+      } else if (var->type->ptr_to->ty == INT) {
         size = 4 * var->type->array_size;
       } else if (var->type->ptr_to->ty == PTR) {
         size = 8 * var->type->array_size;
@@ -350,7 +354,7 @@ void gen_data() {
         error("get_data 対応していない型です。1");  
       }
     } else {
-      error("get_datea 対応していない型です。2");
+      error("get_data 対応していない型です。2");
     }
     printf("  .zero %d\n", size);
   }

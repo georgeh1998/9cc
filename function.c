@@ -6,16 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-Node *generate_function_def_node() {
+Node *generate_function_def_node(Type *type) {
     // 関数 TODO voidもサポートする
     Node *node = calloc(1, sizeof(Node));
     current_func_token = node;
     node->kind = ND_FUNC_DEF;
     node->name = token->str;
     node->len = token->len;
-    Type *f_type = calloc(1, sizeof(Type));
-    f_type->ty = INT;
-    node->type = f_type;
+    node->type = type;
     token = token->next;
     expect("(");
     for (;;) {

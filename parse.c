@@ -301,6 +301,12 @@ Token *tokenize() {
       continue;
     }
 
+    if (strncmp(p, "char", 4) == 0 && !isalnum(p[4])) {
+      cur = new_token(TK_TYPE, cur, p, 4);
+      p += 4;
+      continue;
+    }
+
     if (strncmp(p, "int", 3) == 0 && !isalnum(p[3])) {
       cur = new_token(TK_TYPE, cur, p, 3);
       p += 3;
@@ -379,11 +385,12 @@ Node *function() {
   if (token->kind != TK_TYPE) {
     error("関数の戻り値の型が定義されていません。");
   }
+  Type *base_type = get_base_type();
   token = token->next;
   if (next_is("(")) {
-    return generate_function_def_node();
+    return generate_function_def_node(base_type);
   } else {
-    return generate_gvar_node();
+    return generate_gvar_node(base_type);
   }
 }
 

@@ -62,7 +62,7 @@ typedef enum {
 
 
 struct Type {
-  enum {INT, PTR, ARRAY} ty;
+  enum {CHAR, INT, PTR, ARRAY} ty;
   struct Type *ptr_to;
   size_t array_size;
 };
@@ -203,11 +203,13 @@ Node *operate_sub(Node *l, Node *r);
 
 // global.c
 GVar *find_gvar(Token *tok);
-Node *generate_gvar_node();
+Node *generate_gvar_node(Type *type);
 
 // function.c
-Node *generate_function_def_node();
+Node *generate_function_def_node(Type *type);
 
+// type.c
+Type *get_base_type();
 
 // Debug用関数
 void printTokens(Token token);
