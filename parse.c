@@ -108,8 +108,7 @@ LVar *generate_lvar(int arg_type) {
   if (token->kind != TK_TYPE) {
     error("有効な型ではありません。");
   }
-  Type *type = calloc(1, sizeof(Type));
-  type->ty = INT;
+  Type *type = get_base_type();
   token = token->next;
   for (;;) {
     if (is_("*")) {
@@ -461,6 +460,19 @@ Node *stmt() {
     return node;
   } else if (is_type("int")) {
     LVar *lvar = generate_lvar(0);
+    if (lvar == NULL) {
+      error("有効な変数ではありません。");
+    } else {
+      add_local_variable(lvar);
+      Node *node_lvar_def = calloc(1, sizeof(Node));
+      node_lvar_def->kind = ND_LVAR_DEF;
+      node_lvar_def->offset = lvar->offset;
+      node_lvar_def->locals = lvar;
+      expect(";");
+      return node_lvar_def;
+    }
+  } else if (is_type("char")) {
+      LVar *lvar = generate_lvar(0);
     if (lvar == NULL) {
       error("有効な変数ではありません。");
     } else {

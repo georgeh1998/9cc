@@ -41,7 +41,9 @@ Type *get_function_sig(Node *node) {
 }
 
 int get_size_of(Type *type) {
-    if (type->ty == INT) {
+    if (type->ty == CHAR) {
+        return 1;
+    } else if (type->ty == INT) {
         return 4;
     } else if (type->ty == ARRAY) {
         int each_size = get_size_of(type->ptr_to);
