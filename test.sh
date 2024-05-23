@@ -174,6 +174,11 @@ assert 132 "int *a; int b; int main() { b = 132; a = &b; *a; }"
 assert 133 "int a[2]; int main() { int b; b = 0;  a[0] = 133; a[1] = 194; a[b]; }"
 assert 134 "int a[2]; int main() { a[0] = 123; a[1] = 134; a[1]; }"
 
+# char型導入
+assert 3 "int main() { char x[3]; x[0] = -1; x[1] = 2; int y; y = 4; return x[0] + y; }"
+assert 4 "char x[3]; int main() { x[0] = -1; x[1] = 2; int y; y = 5; return x[0] + y; }"
+assert 5 "char x; int main() { x = -3; int y; y = 8; return x + y; }"
+
 # 残課題
 # マイナスの結果、256以上の数値
 # callの呼び出し時にBSPが8の倍数の場合落ちることがある問題(発生未確認)

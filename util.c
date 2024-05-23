@@ -70,11 +70,24 @@ void add_local_variable(LVar *lvar) {
 
 
 Type *find_assign_type(Type *l, Type *r) {
+
+    if (l->ty == CHAR) {
+        if (r->ty == CHAR) {
+            return l;
+        } else if (r->ty == INT) {
+            return r;
+        } else {
+            error("代入に対応していません: 1");
+        }
+    }
+
     if (l->ty == INT) {
         if (r->ty == INT) {
             return l;
+        } else if (r->ty == CHAR) {
+            return l;
         } else {
-            error("代入に対応していません: 1");
+            error("代入に対応していません: 2");
         }
     }
 
@@ -84,7 +97,7 @@ Type *find_assign_type(Type *l, Type *r) {
         } else if (r->ty == ARRAY) {
             return l;
         } else {
-            error("代入に対応していません: 2");
+            error("代入に対応していません: 3");
         }
     }
 

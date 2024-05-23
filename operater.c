@@ -8,6 +8,9 @@
 
 
 int get_add_size(Type *t) {
+    if (t->ty == CHAR) {
+        return 1;
+    }
     if (t->ty == INT) {
         return 1;
     }
@@ -21,7 +24,9 @@ int get_add_size(Type *t) {
         }
     }
     if (t->ty == ARRAY) {
-        if (t->ptr_to->ty == INT) {
+        if (t->ptr_to->ty == CHAR) {
+            return +1;
+        } else if (t->ptr_to->ty == INT) {
             return +4;
         } else if (t->ptr_to->ty == PTR) {
             return +8;

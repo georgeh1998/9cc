@@ -126,7 +126,9 @@ void gen(Node *node) {
     case ND_LVAR:
       gen_var(node);
       printf("  pop rax\n");
-      if (node->type->ty == INT) {
+      if (node->type->ty == CHAR) {
+        printf("  movsx eax, BYTE PTR [rax]\n");
+      } else if (node->type->ty == INT) {
         printf("  mov eax, [rax]\n");
       } else if (node->type->ty == ARRAY) {
         printf("  push rax\n");
@@ -139,7 +141,9 @@ void gen(Node *node) {
     case ND_GVAR:
       gen_var(node);
       printf("  pop rax\n");
-      if (node->type->ty == INT) {
+      if (node->type->ty == CHAR) {
+        printf("  movsx eax, BYTE PTR [rax]\n");
+      } else if (node->type->ty == INT) {
         printf("  mov eax, [rax]\n");
       } else if (node->type->ty == ARRAY) {
         printf("  push rax\n");
@@ -156,7 +160,9 @@ void gen(Node *node) {
       printf("  pop rdi\n");
       printf("  pop rax\n");
 
-      if (node->type->ty == INT) {
+      if (node->type->ty == CHAR) {
+        printf("  mov BYTE PTR [rax], rdi\n");
+      } else if (node->type->ty == INT) {
         printf("  mov [rax], edi\n");
       } else if (node->type->ty == PTR) {
         printf("  mov [rax], rdi\n");
