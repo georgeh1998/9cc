@@ -20,6 +20,9 @@ FunctionSig *function_sig;
 // 現在見ている関数のToken
 Node *current_func_token;
 
+// 文字列
+char *chars[100];
+
 // Label記憶用のStack
 LabelStack *labelStackIf;
 LabelStack *labelStackWhile;

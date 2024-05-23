@@ -318,7 +318,24 @@ Token *tokenize() {
       continue;
     }
 
-    char *var;
+    // 文字列
+    if (strncmp(p, "\"", 1) == 0) {
+      p += 1;
+      int length = 0;
+      cur = new_token(TK_STRING, cur, p, 0);
+      for (;;) {
+        if (p[length] == '"') {
+          break;
+        } else {
+          length += 1;
+        }
+      }
+      p += length + 1;
+      cur->len = length;
+      continue;
+    }
+    
+    // 変数/関数の名前
     if (isalpha(*p)) {
       int length = 0;
       for (;;) {
@@ -502,6 +519,17 @@ Node *assign() {
   if (consume("=")) {
     Node *a_node = assign();
     Type *type = find_assign_type(node->type, a_node->type);
+    if (type->ty == PTR && type->ptr_to->ty == CHAR) {
+      for (int i = 0; i < 100; i++) {
+        if (chars[i] == NULL) {
+          chars[i] = (char *)malloc(a_node->len + 1);
+          strncpy(chars[i], a_node->name, a_node->len);
+          chars[i][a_node->len] = '\0';
+          a_node->val = i;
+          break;
+        }  
+      }
+    }
     node = new_node(ND_ASSIGN, node, a_node, type);
   }
   return node;
@@ -634,6 +662,7 @@ Node *unary() {
 
 // primary = num 
 //           | ident( "(" ( expr ("," expr)* )? ")" 変数、関数呼び出し
+//           | String
 //           | "(" expr ")"
 Node *primary() {
   if (consume("(")) {
@@ -696,5 +725,21 @@ Node *primary() {
     }
     return node;
   }
+
+  if (token->kind == TK_STRING) {
+    Type *char_type = calloc(1, sizeof(Type));
+    char_type->ty = CHAR;
+    Type *string_type = calloc(1, sizeof(Type));
+    string_type->ty = PTR;
+    string_type->ptr_to = char_type;
+    Node *string_node = calloc(1, sizeof(Node));
+    string_node->kind = ND_STRING;
+    string_node->type = string_type;
+    string_node->name = token->str;
+    string_node->len = token->len;
+    token = token->next;
+    return string_node;
+  }
+
   return new_node_num(expect_number());
 }

@@ -16,6 +16,7 @@ typedef enum {
   TK_NUM,      // 整数トークン
   TK_TYPE,     // 型
   TK_SIZEOF,   // sizeof
+  TK_STRING,   // 文字列
   TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
 
@@ -58,6 +59,7 @@ typedef enum {
   ND_DEREF,     // *            // 22
   ND_LVAR_DEF,  // int          // 23
   ND_GVAR_DEF,  // int          // 24
+  ND_STRING,    // 文字列        // 25
 } NodeKind;
 
 
@@ -97,7 +99,7 @@ struct Node {
   NodeKind kind;
   Node *lhs;
   Node *rhs;
-  int val;        // kindがND_NUMの場合のみ使う
+  int val;        // kindがND_NUMの場合は値、ND_STRINGの場合data番号
   int offset;     // kindがDN_LVARの場合のみ使う
   Node *branch[1000]; // kindがND_IFやforの場合使う(ifはif-elseのみ対応)
   char *name;    // 関数の場合
@@ -168,7 +170,11 @@ extern FunctionSig *function_sig;
 // 現在見ている関数のToken
 extern Node *current_func_token;
 
+// グローバル変数
 extern GVar *gvar;
+
+// 文字列リテラル
+extern char *chars[100];
 
 
 // Label記憶用のStack

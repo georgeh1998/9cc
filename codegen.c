@@ -101,6 +101,7 @@ void gen_top_level_def(Node *node) {
   // 関数のブロック
   for (int i = 0; true; i++) {
     if (node->branch[i]) {
+      //print_ast(node->branch[i], 0);
       gen(node->branch[i]);
     } else {
       break;
@@ -281,6 +282,9 @@ void gen(Node *node) {
       return;
     case ND_GVAR_DEF:
       return;
+    case ND_STRING:
+      printf("  push %d\n", node->val);
+      return;
   }
 
   gen(node->lhs);
@@ -363,5 +367,13 @@ void gen_data() {
       error("get_data 対応していない型です。2");
     }
     printf("  .zero %d\n", size);
+  }
+  for (int i = 0; i < 100; i++) {
+    if (chars[i] != NULL) {
+      printf(".LC%d:\n", i);
+      printf("  .string \"%s\"\n", chars[i]);  
+    } else {
+      break;
+    }
   }
 }
