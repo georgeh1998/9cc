@@ -184,6 +184,11 @@ assert 246 'int main() { int a; a = -10; char *x; x = "a: %d\n"; printf(x, a); a
 assert 10 'int main() { int a; a = 266; char *x; x = "a: %d\n"; printf(x, a); a; }'
 assert 10 'char *x; int a; int main() { a = 266; x = "a: %d\n"; printf(x, a); a; }'
 
+assert 'int main() { int a; int b; a = -1; b = -1; char *c; c = "%d\n"; int d; printf(c, -4); }'
+
+# 第二引数の-が動かない
+# assert 254 'int foo(int a, int b) { return a + b; } int main() { return foo(-1, -1) }'
+
 # 現在の問題
 # printfを呼ぶために関数のsignature登録をやめた
 # これにより、既存の関数を使用している箇所が呼べない。
