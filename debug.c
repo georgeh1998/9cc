@@ -93,6 +93,9 @@ void print_ast(Node *node, int depth) {
     case ND_STRING:
         printf("%.*s\n", node->len, node->name);
         break;
+    case ND_RETURN:
+        printf("戻\n");
+        break;
     default:
         printf("Unknown NodeKind: %d\n", node->kind);
     }

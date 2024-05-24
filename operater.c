@@ -45,6 +45,14 @@ Node *operate_add(Node *l, Node *r) {
     Type *lt = l->type;
     Type *rt = r->type;
 
+    if (lt->ty == INT && rt->ty == INT) {
+        return new_node(ND_ADD, l, r, rt);
+    }
+
+    if (lt->ty == CHAR && rt->ty == CHAR) {
+        return new_node(ND_ADD, l, r, rt);
+    }
+
     if (lt->ty == INT) {
         Node *m_node = new_node(ND_MUL, new_node_num(get_add_size(rt)), l, lt);
         return new_node(ND_ADD, r, m_node, rt);
