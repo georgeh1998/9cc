@@ -4,7 +4,7 @@ assert() {
     input="$2"
 
     ./9cc "$input" > tmp.s #コンパイラが出力するアセンブラ
-    cc -o tmp tmp.s c_func.c #出力したアセンブラを機械語に変換
+    cc -static -o tmp tmp.s c_func.c #出力したアセンブラを機械語に変換
     ./tmp                  #実行
     actual="$?"
 
@@ -109,13 +109,13 @@ assert 32 "int main () { int a; int x; a = 0; x = 2; while (a < 4) { a = a + 1; 
 
 
 # function call (c_func.c)
-# assert 0 "int main () { foo0(); }"
-# assert 1 "int main () { foo1(1); }"
-# assert 3 "int main () { foo2(1, 2); }"
-# assert 6 "int main () { foo3(1, 2, 3); }"
-# assert 10 "int main () { foo4(1, 2, 3, 4); }"
-# assert 15 "int main () { foo5(1, 2, 3, 4, 5); }"
-# assert 21 "int main () { foo6(1, 2, 3, 4, 5, 6); }"
+assert 0 "int main () { foo0(); }"
+assert 1 "int main () { foo1(1); }"
+assert 3 "int main () { foo2(1, 2); }"
+assert 6 "int main () { foo3(1, 2, 3); }"
+assert 10 "int main () { foo4(1, 2, 3, 4); }"
+assert 15 "int main () { foo5(1, 2, 3, 4, 5); }"
+assert 21 "int main () { foo6(1, 2, 3, 4, 5, 6); }"
 
 # function define
 assert 1 "int foo() { return 1; } int main () { foo(); }"
@@ -178,6 +178,15 @@ assert 134 "int a[2]; int main() { a[0] = 123; a[1] = 134; a[1]; }"
 assert 3 "int main() { char x[3]; x[0] = -1; x[1] = 2; int y; y = 4; return x[0] + y; }"
 assert 4 "char x[3]; int main() { x[0] = -1; x[1] = 2; int y; y = 5; return x[0] + y; }"
 assert 5 "char x; int main() { x = -3; int y; y = 8; return x + y; }"
+
+# 文字列リテラル導入
+assert 246 'int main() { int a; a = -10; char *x; x = "a: %d\n"; printf(x, a); a; }'
+assert 10 'int main() { int a; a = 266; char *x; x = "a: %d\n"; printf(x, a); a; }'
+assert 10 'char *x; int a; int main() { a = 266; x = "a: %d\n"; printf(x, a); a; }'
+
+# 現在の問題
+# printfを呼ぶために関数のsignature登録をやめた
+# これにより、既存の関数を使用している箇所が呼べない。
 
 # 残課題
 # マイナスの結果、256以上の数値

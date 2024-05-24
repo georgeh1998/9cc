@@ -135,7 +135,11 @@ void gen(Node *node) {
         printf("  push rax\n");
         return;
       } else {
-        printf("  mov rax, [rax]\n");
+        if (node->type->ptr_to->ty == CHAR) {
+          printf("  mov rax, QWORD PTR [rax]\n");
+        } else {
+          printf("  mov rax, [rax]\n");  
+        }
       }
       printf("  push rax\n");
       return;
@@ -150,12 +154,23 @@ void gen(Node *node) {
         printf("  push rax\n");
         return;
       } else {
-        printf("  mov rax, [rax]\n");
+        if (node->type->ptr_to->ty == CHAR) {
+          printf("  mov rax, QWORD PTR [rax]\n");
+        } else {
+          printf("  mov rax, [rax]\n");  
+        }
       }
       printf("  push rax\n");
       return;
     case ND_ASSIGN:
       gen_var(node->lhs);
+      if (node->type->ty == PTR && node->type->ptr_to->ty == CHAR) {
+        printf("  pop rax\n");
+        printf("  push rax\n");
+        printf("  mov QWORD PTR [rax], OFFSET FLAT:.LC%d\n", node->rhs->val);
+        return;
+      }
+
       gen(node->rhs);
 
       printf("  pop rdi\n");
@@ -243,7 +258,12 @@ void gen(Node *node) {
           gen(n);
           switch (arg_i) {
             case 0:
-              printf("  pop rdi\n");
+              if (n->type->ty == PTR && n->type->ptr_to->ty == CHAR) {
+                printf("  mov rdi, rax\n");
+                printf("  mov eax, 0\n");
+              } else {
+                printf("  pop rdi\n");
+              }
               break;
             case 1:
               printf("  pop rsi\n");
@@ -283,7 +303,6 @@ void gen(Node *node) {
     case ND_GVAR_DEF:
       return;
     case ND_STRING:
-      printf("  push %d\n", node->val);
       return;
   }
 

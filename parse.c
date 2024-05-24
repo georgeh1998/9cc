@@ -691,7 +691,8 @@ Node *primary() {
         consume(",");
       }
       consume(")");
-      node->type = get_function_sig(node);
+      Type *type = get_function_sig(node);
+      node->type = type;
       return node;
     }
 

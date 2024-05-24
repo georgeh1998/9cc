@@ -37,6 +37,7 @@ Type *get_function_sig(Node *node) {
             return f->return_type;
         }
     }
+    return NULL;
     error("関数が定義されていません。");
 }
 
