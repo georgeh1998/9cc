@@ -19,8 +19,8 @@ void error_at(char *loc, char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
 
-  int pos = loc - user_input;
-  fprintf(stderr, "%s\n", user_input);
+  int pos = loc - file;
+  fprintf(stderr, "%s\n", file);
   fprintf(stderr, "%*s", pos, " ");
   fprintf(stderr, "^ ");
   vfprintf(stderr, fmt, ap);
@@ -246,7 +246,7 @@ bool startswith(char *p, char *q) {
 }
 
 Token *tokenize() {
-  char *p = user_input;
+  char *p = file;
   Token head;
   head.next = NULL;
   Token *cur = &head;

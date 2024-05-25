@@ -9,7 +9,7 @@
 Token *token;
 
 // 入力プログラム
-char *user_input;
+char *file;
 
 // 複数行分のNode
 Node *code[100];
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
   }
 
   // トークナイズする
-  user_input = argv[1];
+  file = read_file(argv[1]);
   token = tokenize();
 
   program();

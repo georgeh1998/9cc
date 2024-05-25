@@ -16,182 +16,177 @@ assert() {
     fi
 }
 
-assert 0 "int main() { 0; }"
-assert 42 "int main() { 42; }"
-assert 21 "int main() { 5+20-4; }"
-assert 21 "int main() { 5 + 20 - 4; }"
-assert 47 'int main() { 5+6*7; }'
-assert 15 'int main () { 5*(9-6); }'
-assert 4 'int main() { (3+5)/2; }'
-assert 15 'int main() { (2+3)*(1+2); }'
-assert 10 'int main() { -10+20; }'
-assert 30 'int main() { 10-(-40)-(+20); }'
-assert 6 'int main() { 10-(-4*2)/((-4)/2); }'
+assert 0 "./test/basic_1.c"
+assert 42 "./test/basic_2.c"
+assert 21 "./test/basic_3.c"
+assert 21 "./test/basic_4.c"
+assert 47 "./test/basic_5.c"
+assert 15 "./test/basic_6.c"
+assert 4 "./test/basic_7.c"
+assert 15 "./test/basic_8.c"
+assert 10 "./test/basic_9.c"
+assert 30 "./test/basic_10.c"
+assert 6 "./test/basic_11.c"
 
-assert 0 'int main () { 0==1; }'
-assert 1 'int main () { 42==42; }'
-assert 1 'int main () { 0!=1; }'
-assert 0 'int main () { 42!=42; }'
+assert 0 "./test/2_equality_1.c"
+assert 1 "./test/2_equality_2.c"
+assert 1 "./test/2_equality_3.c"
+assert 0 "./test/2_equality_4.c"
 
-assert 1 'int main () { 0<1; }'
-assert 0 'int main () { 1<1; }'
-assert 0 'int main () { 2<1; }'
-assert 1 'int main () { 0<=1; }'
-assert 1 'int main () { 1<=1; }'
-assert 0 'int main () { 2<=1; }'
+assert 1 "./test/compare_1.c"
+assert 0 "./test/compare_2.c"
+assert 0 "./test/compare_3.c"
+assert 1 "./test/compare_4.c"
+assert 1 "./test/compare_5.c"
+assert 0 "./test/compare_6.c"
+assert 1 "./test/compare_7.c"
+assert 0 "./test/compare_8.c"
+assert 0 "./test/compare_9.c"
+assert 1 "./test/compare_10.c"
+assert 1 "./test/compare_11.c"
+assert 0 "./test/compare_12.c"
 
-assert 1 'int main () { 1>0; }'
-assert 0 'int main () { 1>1; }'
-assert 0 'int main () { 1>2; }'
-assert 1 'int main () { 1>=0; }'
-assert 1 'int main () { 1>=1; }'
-assert 0 'int main () { 1>=2; }'
-
-assert 138 "int main () { 2+1;3+131+(2*2); }"
-assert 1 "int main () { int a; a=1; }"
-assert 5 "int main () { int a; a=2+3; }"
-assert 4 "int main () { int a; int b; a=b=4; }"
-assert 6 "int main () { int a; int b; int c; a=1;b=2;c=a+b+3; }"
-
-assert 6 "int main () { int ab; int abc; int abcd; ab=1;abc=2;abcd=ab+abc+3; }"
-assert 6 "int main () { int ab; int abc; int abcd; ab=1;abc=2;abcd=ab+abc+3; }"
-assert 6 "int main () { int aB; int AbC; int aBcD; aB=1;AbC=2;aBcD=aB+AbC+3; }"
-
-assert 2 "int main () { return 2; }"
-assert 3 "int main () { int a; a = 3; return a; a = 2; }"
-assert 6 "int main () { int returnAbc; int a; returnAbc = 3; a = 3; returnAbc + a; }"
+assert 138 "./test/int_local_var_1.c"
+assert 1 "./test/int_local_var_2.c"
+assert 5 "./test/int_local_var_3.c"
+assert 4 "./test/int_local_var_4.c"
+assert 6 "./test/int_local_var_5.c"
+assert 6 "./test/int_local_var_6.c"
+assert 6 "./test/int_local_var_7.c"
+assert 2 "./test/int_local_var_8.c"
+assert 3 "./test/int_local_var_9.c"
+assert 6 "./test/int_local_var_10.c"
 
 # if
-assert 0 "int main () { int x; x = 0; if (x) 1; x; }"
-assert 1 "int main () { int x; x = 1; if (x-1) 1; x; }"
-assert 0 "int main () { int a; int x; a = 3; x = 0; if (x) a = 10; x; }"
-assert 1 "int main () { int a; int x; a = 1; x = 1; if (x-1) a = 10; x; }"
-assert 0 "int main () { int a; int x; a = 1; x = 0; if (x) a = 10; x; }"
-assert 1 "int main () { int a; int x; a = 1; x = 0; if (x) a = 10; a; }"
-assert 1 "int main () { int a; int x; a = 1; x = 0; if (x) a = 10; x+a; }"
-assert 1 "int main () { int a; int x; a = 1; x = 0; if (x) a = 10; a+x; }"
-assert 1 "int main () { int a; int x; a = 1; x = 1; if (x) a = 10; x; }"
-assert 10 "int main () { int a; int x; a = 1; x = 1; if (x) a = 10; a; }"
-assert 11 "int main () { int a; int x; a = 1; x = 1; if (x) a = 10; x+a; }"
-assert 11 "int main () { int a; int x; a = 1; x = 1; if (x) a = 10; a+x; }"
+assert 0 "./test/if_1.c"
+assert 1 "./test/if_2.c"
+assert 0 "./test/if_3.c"
+assert 1 "./test/if_4.c"
+assert 0 "./test/if_5.c"
+assert 1 "./test/if_6.c"
+assert 1 "./test/if_7.c"
+assert 1 "./test/if_8.c"
+assert 1 "./test/if_9.c"
+assert 10 "./test/if_10.c"
+assert 11 "./test/if_11.c"
+assert 11 "./test/if_12.c"
 
 # if-else
-assert 2 "int main () { int x; x = 0; if (x) x = 4; else x = 2; }"
-assert 5 "int main () { int x; x = 1; if (x) x = 5; else x = 2; }"
+assert 2 "./test/if_else_1.c"
+assert 5 "./test/if_else_2.c"
 
 # while
-assert 0 "int main () { int a; a = 0; while (a) 1; }"
-assert 0 "int main () { int a; a = 1; while (a) a = a - 1; }"
-assert 3 "int main () { int a; a = 2; while (a) a = a - 1; a + 3; }"
+assert 0 "./test/while_1.c"
+assert 0 "./test/while_2.c"
+assert 3 "./test/while_3.c"
 
-# if
-assert 3 "int main () { int x; int a; x = 123; for (a = 1; a < 3; a = a + 1) x; }"
-assert 10 "int main () { int x; int a; x = 0; for (a = 0; a < 10; a = a + 1) x = x + 1; }"
-assert 10 "int main () { int a; int x; a = 0; x = 0; for (a = 0; a < 10; a = a + 1) x = x + 1; x; }"
-assert 3 "int main () { int x; int a; x = 0; for (a = 2; a < 100; a = (a * a)) x = x + 1; x; }"
+# for
+assert 3 "./test/for_1.c"
+assert 10 "./test/for_2.c"
+assert 10 "./test/for_3.c"
+assert 3 "./test/for_4.c"
 
 # while - if - for 複数ある場合やネスト
-assert 0 "int main () { int a; a = 1; if (a) a = 0; if (a) a = 2; a; }"
-assert 8 "int main () { int a; int x; a = 0; for (x = 0; x < 3; x = x + 1) a = a + 1; for (x = 0; x < 5; x = x + 1) a = a + 1; a; }"
-assert 20 "int main () { int a; a = 0; while (a < 10) a = a + 1; while (a < 20) a = a + 1; a; }"
-assert 30 "int main () { int a; a = 1; if (a) a = 0; while (a < 30) a = a + 1; a; }"
-assert 5 "int main () { int a; int j; a = 0; for (j = 1; j < 10; j = j + 1) a = a + 1; if (a == 9) a = 5; a; }"
-assert 9 "int main () { int a; int x; int y; a = 0; for (x = 0; x < 3; x = x + 1) for (y = 0; y < 3; y = y + 1) a = a + 1; a; }"
-assert 50 "int main () { int a; int x; int y; a = 0; for (x = 0; x < 5; x = x + 1) for (y = 0; y < 10; y = y + 1) a = a + 1; a; }"
-assert 3 "int main () { int a; int b; int c; a = 1; b = 1; c = 1; if (a) if (b) c = 3; c; }"
+assert 0 "./test/while_if_for_nest_1.c"
+assert 8 "./test/while_if_for_nest_2.c"
+assert 20 "./test/while_if_for_nest_3.c"
+assert 30 "./test/while_if_for_nest_4.c"
+assert 5 "./test/while_if_for_nest_5.c"
+assert 9 "./test/while_if_for_nest_6.c"
+assert 50 "./test/while_if_for_nest_7.c"
+assert 3 "./test/while_if_for_nest_8.c"
 
 # compound statement
-assert 4 "int main () { int a; a = 1; if (a) { a = a + 1; a = a + 2; } }"
-assert 16 "int main () { int a; a = 1; if (a) { a = a + 1; a = a + 2; a = a * a; } }"
-assert 19 "int main () { int a; int x; x = 10; for (a = 1; a < 10; a = a + 1) x = x + 1; x; }"
-assert 10 "int main () { int a; int x; a = 3; x = 5; if (a < 10) { a = a + 1; x = x * 2; } x; }"
-assert 32 "int main () { int a; int x; a = 0; x = 2; while (a < 4) { a = a + 1; x = x * 2; } x; }"
-
+assert 4 "./test/compound_statement_1.c"
+assert 16 "./test/compound_statement_2.c"
+assert 19 "./test/compound_statement_3.c"
+assert 10 "./test/compound_statement_4.c"
+assert 32 "./test/compound_statement_5.c"
 
 # function call (c_func.c)
-assert 0 "int main () { foo0(); }"
-assert 1 "int main () { foo1(1); }"
-assert 3 "int main () { foo2(1, 2); }"
-assert 6 "int main () { foo3(1, 2, 3); }"
-assert 10 "int main () { foo4(1, 2, 3, 4); }"
-assert 15 "int main () { foo5(1, 2, 3, 4, 5); }"
-assert 21 "int main () { foo6(1, 2, 3, 4, 5, 6); }"
+assert 0 "./test/function_call_1.c"
+assert 1 "./test/function_call_2.c"
+assert 3 "./test/function_call_3.c"
+assert 6 "./test/function_call_4.c"
+assert 10 "./test/function_call_5.c"
+assert 15 "./test/function_call_6.c"
+assert 21 "./test/function_call_7.c"
 
 # function define
-assert 1 "int foo() { return 1; } int main () { foo(); }"
-assert 230 "int foo() { return 230; } int main () { foo(); }"
-assert 230 "int foo() { return 230; } int main() { return foo(); }"
-assert 55 "int fibonacci(int n) { int a; int b; int tmp; int i; a = 0; b = 1; if (n == 0) { return a; } if (n == 1) { return b; } for (i = 0; i < (n-1); i = i + 1) { tmp = a; a = b; b = tmp + b; } return b; } int main() { return fibonacci(10); }"
-assert 55 "int fibonacci(int n) { if (n == 0) { return 0; } if (n == 1) { return 1; } return fibonacci(n-1) + fibonacci(n-2); } int main() { return fibonacci(10); }"
+assert 1 "./test/function_define_1.c"
+assert 230 "./test/function_define_2.c"
+assert 230 "./test/function_define_3.c"
+assert 55 "./test/function_define_4.c"
+assert 55 "./test/function_define_5.c"
 
 # 関数
-assert 1 "int foo(int a) { return a; } int main() { foo(1); }"
-assert 3 "int foo(int a, int b) { return a + b; } int main() { foo(1, 2); }"
-assert 6 "int foo(int a, int b, int c) { return a + b + c; } int main() { foo(1, 2, 3); }"
-assert 10 "int foo(int a, int b, int c, int d) { return a + b + c + d; } int main() { foo(1, 2, 3, 4); }"
-assert 15 "int foo(int a, int b, int c, int d, int e) { return a + b + c + d + e; } int main() { foo(1, 2, 3, 4, 5); }"
-assert 21 "int foo(int a, int b, int c, int d, int e, int f) { return a + b + c + d + e + f; } int main() { foo(1, 2, 3, 4, 5, 6); }"
+assert 1 "./test/function_1.c"
+assert 3 "./test/function_2.c"
+assert 6 "./test/function_3.c"
+assert 10 "./test/function_4.c"
+assert 15 "./test/function_5.c"
+assert 21 "./test/function_6.c"
 
 # ポインタ、アドレス
-assert 3 "int main () { int x; int *y; x = 3; y = &x; return *y; }"
-assert 10 "int main () { int x; int *y; y=&x; *y = 10; return x; }"
-assert 57 "int main () { int x; int *y; y=&x; *y = 57; return x; }"
-assert 167 "int main () { int x; int *y; int **z; y=&x; z = &y;  **z = 167; return x; }"
-assert 3 "int main () { int a; int *b; int **c; int ***d; b=&a; c = &b; d = &c; ***d = 3; return a; }"
+assert 3 "./test/pointer_address_1.c"
+assert 10 "./test/pointer_address_2.c"
+assert 57 "./test/pointer_address_3.c"
+assert 167 "./test/pointer_address_4.c"
+assert 3 "./test/pointer_address_5.c"
 
 # ポインタの加算/減算
-assert 5 "int main () { int x; int y; int *z; x = 5; z = &y + 1; return *z; }"
-assert 1 "int main () { int x; int *y; y = &x; y + 1 == &x + 1; }"
-assert 1 "int main () { int *x; int *y; &x == &y + 1;  }"
+assert 5 "./test/pointer_add_sub_1.c"
+assert 1 "./test/pointer_add_sub_2.c"
+assert 1 "./test/pointer_add_sub_3.c"
 
 
 # sizeof
-assert 4 "int main() { sizeof 1; }"
-assert 4 "int main() { sizeof(1); }"
-assert 4 "int main() { sizeof(2*2+3); }"
-assert 4 "int main() { int a; sizeof a; }"
-assert 8 "int main() { int *b; sizeof b; }"
+assert 4 "./test/sizeof_1.c"
+assert 4 "./test/sizeof_2.c"
+assert 4 "./test/sizeof_3.c"
+assert 4 "./test/sizeof_4.c"
+assert 8 "./test/sizeof_5.c"
 
 # 配列定義
-assert 4 "int main() { int a; int *b; int c[15]; int *d[15]; 4; }"
-assert 4 "int main() { int *******d[15]; 4; }"
-assert 40 "int main() { int a[10]; sizeof a;}"
-assert 80 "int main() { int *a[10]; sizeof a;}"
+assert 4 "./test/array_define_1.c"
+assert 4 "./test/array_define_2.c"
+assert 40 "./test/array_define_3.c"
+assert 80 "./test/array_define_4.c"
 
 # 配列の代入
-assert 3 "int main () { int x[2]; *x = 1; *(x+1) = 2; int *p; p = x; return *p + *(p+1); }"
+assert 3 "./test/array_assign_1.c"
 
-# 配列の添字 (変数を使用するとうまく動かない)
-assert 12 "int main() { int x[1]; *x = 12; x[0]; }"
-assert 13 "int main() { int x[3]; *(x+2) = 13; x[2]; }"
-assert 14 "int main() { int x[2]; x[1] = 14; *(x+1); }"
-assert 15 "int main() { int x[4]; x[3] = 15; *(x+3); }"
+# 配列の添字
+assert 12 "./test/array_index_1.c"
+assert 13 "./test/array_index_2.c"
+assert 14 "./test/array_index_3.c"
+assert 15 "./test/array_index_4.c"
 
 # グローバル変数
-assert 130 "int a; int main () { a = 130; a; }"
-assert 131 "int a; int foo() { a = 100; return a; } int main () { a = 10; return foo() + 31; }"
-assert 132 "int *a; int b; int main() { b = 132; a = &b; *a; }"
-assert 133 "int a[2]; int main() { int b; b = 0;  a[0] = 133; a[1] = 194; a[b]; }"
-assert 134 "int a[2]; int main() { a[0] = 123; a[1] = 134; a[1]; }"
+assert 130 "./test/global_var_1.c"
+assert 131 "./test/global_var_2.c"
+assert 132 "./test/global_var_3.c"
+assert 133 "./test/global_var_4.c"
+assert 134 "./test/global_var_5.c"
 
 # char型導入
-assert 3 "int main() { char x[3]; x[0] = -1; x[1] = 2; int y; y = 4; return x[0] + y; }"
-assert 4 "char x[3]; int main() { x[0] = -1; x[1] = 2; int y; y = 5; return x[0] + y; }"
-assert 5 "char x; int main() { x = -3; int y; y = 8; return x + y; }"
+assert 3 "./test/char_1.c"
+assert 4 "./test/char_2.c"
+assert 5 "./test/char_3.c"
 
 # 文字列リテラル導入
-assert 246 'int main() { int a; a = -10; char *x; x = "a: %d\n"; printf(x, a); a; }'
-assert 10 'int main() { int a; a = 266; char *x; x = "a: %d\n"; printf(x, a); a; }'
-assert 10 'char *x; int a; int main() { a = 266; x = "a: %d\n"; printf(x, a); a; }'
+assert 246 "./test/string_1.c"
+assert 10 './test/string_2.c'
+assert 10 './test/string_3.c'
 
-assert 'int main() { int a; int b; a = -1; b = -1; char *c; c = "%d\n"; int d; printf(c, -4); }'
+
+# assert 'int main() { int a; int b; a = -1; b = -1; char *c; c = "%d\n"; int d; printf(c, -4); }'
 
 # 第二引数の-が動かない
 # assert 254 'int foo(int a, int b) { return a + b; } int main() { return foo(-1, -1) }'
 
 # 現在の問題
 # printfを呼ぶために関数のsignature登録をやめた
-# これにより、既存の関数を使用している箇所が呼べない。
 
 # 残課題
 # マイナスの結果、256以上の数値

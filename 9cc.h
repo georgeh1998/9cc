@@ -159,7 +159,7 @@ int pop_label(LabelStack *stack);
 extern Token *token;
 
 // 入力プログラム
-extern char *user_input;
+extern char *file;
 
 // 複数行分のNode
 extern Node *code[100];
@@ -221,5 +221,9 @@ Type *get_base_type();
 void printTokens(Token token);
 void printToken(Token token);
 void print_ast(Node *node, int depth);
+
+
+// file_reader
+char *read_file(char *path);
 
 #endif
