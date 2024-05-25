@@ -363,6 +363,7 @@ void gen(Node *node) {
 
 
 void gen_data() {  
+  printf(".data\n");
   for (GVar *var = gvar; var; var = var->next) {
     printf("%.*s:\n", var->len, var->name);
     int size;
