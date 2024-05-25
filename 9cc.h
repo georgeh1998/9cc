@@ -128,7 +128,7 @@ typedef struct {
 
 
 void error(char *fmt, ...);
-void error_at(char *loc, char *fmt, ...);
+void error_at(char *loc, char *msg);
 
 Token *tokenize();
 
@@ -157,6 +157,9 @@ int pop_label(LabelStack *stack);
 
 // 現在着目しているトークン
 extern Token *token;
+
+// file name
+extern char *filename;
 
 // 入力プログラム
 extern char *file;

@@ -15,16 +15,29 @@ void error(char *fmt, ...) {
 }
 
 // エラー箇所を報告する
-void error_at(char *loc, char *fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
+void error_at(char *loc, char *msg) {
+  char *line = loc;
+  while (file < line && line[-1] != '\n') {
+    line--;
+  }
+  char *end = loc;
+  while (*end != '\n') {
+    end++;
+  }
 
-  int pos = loc - file;
-  fprintf(stderr, "%s\n", file);
+  int line_num = 1;
+  for (char *p = file; p < line; p++) {
+    if (*p == '\n') {
+      line_num++;
+    }
+  }
+
+  int indent = fprintf(stderr, "%s:%d", filename, line_num);
+  fprintf(stderr, "%.*s\n", (int)(end - line), line);
+
+  int pos = loc - line + indent;
   fprintf(stderr, "%*s", pos, " ");
-  fprintf(stderr, "^ ");
-  vfprintf(stderr, fmt, ap);
-  fprintf(stderr, "\n");
+  fprintf(stderr, "^ %s\n", msg);
   exit(1);
 }
 
@@ -34,7 +47,11 @@ void expect(char *op) {
       strlen(op) != token->len ||
       memcmp(token->str, op, token->len)
   ) {
-    error_at(token->str, "expected '%c'", op);
+    char *expected;
+    expected = calloc(1, 20 * sizeof(char));
+    sprintf(expected, "expected %s", op);
+    error_at(token->str, expected);
+    
   }
   token = token->next;
 }

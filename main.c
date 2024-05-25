@@ -8,6 +8,9 @@
 // 現在着目しているトークン
 Token *token;
 
+// file name
+char *filename;
+
 // 入力プログラム
 char *file;
 
@@ -34,6 +37,8 @@ int main(int argc, char **argv) {
     fprintf(stderr, "引数の個数が正しくありません\n");
     return 1;
   }
+
+  filename = argv[1];
 
   // トークナイズする
   file = read_file(argv[1]);
