@@ -28,10 +28,10 @@ assert 10 "./test/basic_9.c"
 assert 30 "./test/basic_10.c"
 assert 6 "./test/basic_11.c"
 
-assert 0 "./test/2_equality_1.c"
-assert 1 "./test/2_equality_2.c"
-assert 1 "./test/2_equality_3.c"
-assert 0 "./test/2_equality_4.c"
+assert 0 "./test/equality_1.c"
+assert 1 "./test/equality_2.c"
+assert 1 "./test/equality_3.c"
+assert 0 "./test/equality_4.c"
 
 assert 1 "./test/compare_1.c"
 assert 0 "./test/compare_2.c"
@@ -179,6 +179,10 @@ assert 246 "./test/string_1.c"
 assert 10 './test/string_2.c'
 assert 10 './test/string_3.c'
 
+
+# comment
+assert 161 "./test/comment_1.c"
+assert 162 "./test/comment_2.c"
 
 # assert 'int main() { int a; int b; a = -1; b = -1; char *c; c = "%d\n"; int d; printf(c, -4); }'
 
