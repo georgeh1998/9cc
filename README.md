@@ -21,10 +21,10 @@ Welcome to georgecc! This project is a self-hosting compiler for a subset of the
   - The compiler can only process one input file at a time.
 - No Linker: 
   - georgecc does not include linker functionality. If standard library calls or external functions are needed, the output assembly will need to be linked using another tool like cc.
+ 
 
 # Getting Started
 To use georgecc, follow these steps:
-
 
 ```
 git clone https://github.com/georgeh1998/georgecc
@@ -34,3 +34,12 @@ make
 ```
 
 This will compile the specified C file using georgecc. Remember, the output will be in assembly, which can then be linked manually if needed using a standard C compiler like gcc to create an executable.
+
+
+# Running Tests
+To verify that georgecc correctly compiles the C files located in the test folder, you can use the provided test suite. Simply run the following command from the project's root directory:
+
+```
+make test
+```
+This command will compile the test C files and check for correctness, ensuring that the compiler functions as expected.
