@@ -43,3 +43,7 @@ To verify that georgecc correctly compiles the C files located in the test folde
 make test
 ```
 This command will compile the test C files and check for correctness, ensuring that the compiler functions as expected.
+
+
+# Thaks
+The development of georgecc was inspired by and based on the online resource [低レイヤを知りたい人のためのCコンパイラ作成入門](https://www.sigbus.info/compilerbook) by Rui Ueyama san. This resource is highly recommended for anyone interested in the details of low-level programming and compiler construction.
