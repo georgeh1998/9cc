@@ -1,4 +1,4 @@
-#include "./9cc.h"
+#include "./georgecc.h"
 #include <stdio.h>
 #include <string.h>
 

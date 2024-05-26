@@ -3,7 +3,7 @@ assert() {
     expected="$1"
     input="$2"
 
-    ./9cc "$input" > tmp.s #コンパイラが出力するアセンブラ
+    ./georgecc "$input" > tmp.s #コンパイラが出力するアセンブラ
     cc -static -o tmp tmp.s c_func.c #出力したアセンブラを機械語に変換
     ./tmp                  #実行
     actual="$?"

@@ -3,19 +3,19 @@ SRCS=$(wildcard *.c)
 OBJS=$(SRCS:.c=.o)
 ARG = arg
 
-9cc: $(OBJS)
-	$(CC) -o 9cc $(OBJS) $(LDFLAGS)
+georgecc: $(OBJS)
+	$(CC) -o georgecc $(OBJS) $(LDFLAGS)
 
-$(OBJS): 9cc.h
+$(OBJS): georgecc.h
 
-test: 9cc
+test: georgecc.h
 	./test.sh
 
 # make check ARG="12+2;"
-check: 9cc
+check: georgecc.h
 	./test2.sh '${ARG}'
 
 clean:
-	rm -f 9cc *.o *~ tmp*
+	rm -f georgecc *.o *~ tmp*
 
 .PHONY: test clean

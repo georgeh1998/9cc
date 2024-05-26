@@ -1,4 +1,4 @@
-#include "./9cc.h"
+#include "./georgecc.h"
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
